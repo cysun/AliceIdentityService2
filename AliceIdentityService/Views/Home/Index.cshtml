@@ -1,8 +1,11 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-}
-
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+﻿<div class="p-5 bg-light rounded-3">
+    <div>
+        <p class="fs-5">
+            Alice Identity Service is part of the
+            <a href="https://csns.cysun.org/wiki/content/cysun/alice/">Alice Project</a>.
+            It handles user management and Single Sign-On (SSO) for the other services.
+        </p>
+        <a class="btn btn-primary btn-lg me-3" role="button" asp-controller="Account" asp-action="Login">Login</a>
+        <a class="btn btn-primary btn-lg role="button" asp-controller="Account" asp-action="Register">Register</a>
+    </div>
 </div>

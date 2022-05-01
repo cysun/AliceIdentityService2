@@ -1,0 +1,33 @@
+﻿@model LoginInputModel
+@{
+    ViewData["Title"] = "Login";
+}
+
+<div class="row justify-content-center px-3">
+    <div class="col col-lg-6 border bg-light">
+        <form method="post">
+            <h2 class="text-center">Sign In</h2>
+            <div class="form-floating mb-3">
+                <input asp-for="Email" class="form-control" placeholder="Email" required>
+                <label asp-for="Email"></label>
+            </div>
+            <div class="form-floating mb-3">
+                <input asp-for="Password" class="form-control" placeholder="Password" required>
+                <label asp-for="Password"></label>
+            </div>
+            <div class="mb-3 d-grid">
+                <button type="submit" class="btn btn-primary">Login</button>
+            </div>
+            <div class="d-flex justify-content-between">
+                <div class="mb-3 form-check">
+                    <input asp-for="RememberMe" class="form-check-input">
+                    <label asp-for="RememberMe" class="form-check-label"></label>
+                </div>
+                <div>
+                    <a href="#" class="float-right">Forgot Password?</a>
+                </div>
+            </div>
+        </form>
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    </div>
+</div>

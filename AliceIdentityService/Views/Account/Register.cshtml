@@ -1,0 +1,37 @@
+﻿@model RegistrationInputModel
+@{
+    ViewData["Title"] = "Register";
+}
+
+<div class="row justify-content-center px-3">
+    <div class="col col-lg-6 border bg-light">
+        <form method="post">
+            <h2 class="text-center">Register</h2>
+            <div class="form-floating mb-3">
+                <input asp-for="FirstName" class="form-control" placeholder="First Name" required>
+                <label asp-for="FirstName"></label>
+            </div>
+            <div class="form-floating mb-3">
+                <input asp-for="LastName" class="form-control" placeholder="Last Name" required>
+                <label asp-for="LastName"></label>
+            </div>
+            <div class="form-floating mb-3">
+                <input asp-for="Email" class="form-control" placeholder="Email" required>
+                <label asp-for="Email"></label>
+            </div>
+            <div class="form-floating mb-3">
+                <input asp-for="Password" class="form-control" placeholder="Password" required>
+                <label asp-for="Password"></label>
+            </div>
+
+            <div class="form-floating mb-3">
+                <input asp-for="ConfirmPassword" class="form-control" placeholder="Confirm Password" required>
+                <label asp-for="ConfirmPassword"></label>
+            </div>
+            <div class="mb-3 d-grid">
+                <button type="submit" class="btn btn-primary">Register</button>
+            </div>
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        </form>
+    </div>
+</div>
