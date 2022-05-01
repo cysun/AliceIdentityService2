@@ -1,9 +1,28 @@
 {
-  "Logging": {
-    "LogLevel": {
+  "Serilog": {
+    "Using": [
+      "Serilog.Sinks.File"
+    ],
+    "WriteTo": [
+      {
+        "Name": "File",
+        "Args": {
+          "path": "D:/Temp/AliceIdentityService2/log.txt",
+          "rollingInterval": "Day",
+          "retainedFileCountLimit": null
+        }
+      }
+    ],
+    "MinimumLevel": {
       "Default": "Information",
-      "Microsoft.AspNetCore": "Warning"
-    }
+      "Override": {
+        "Microsoft": "Warning",
+        "System": "Warning"
+      }
+    },
+    "Enrich": [
+      "FromLogContext"
+    ]
   },
   "AllowedHosts": "*"
 }
