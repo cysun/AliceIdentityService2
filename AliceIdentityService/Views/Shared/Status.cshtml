@@ -1,0 +1,7 @@
+@model StatusViewModel
+@{
+    ViewData["Title"] = Model.Subject ?? "Status";
+}
+<div class="alert alert-success" role="alert">
+    @Model.Message
+</div>

@@ -1,0 +1,5 @@
+<p>Please click on the following link to verify your email address:</p>
+<a href="{{link}}">{{link}}</a>
+
+<p>Thank you!</p>
+<p>Alice Identity Service</p>

@@ -1,4 +1,13 @@
 {
+  "ConnectionStrings": {
+    "DefaultConnection": "Host=localhost;Database=ais2;Username=cysun;Password=abcd"
+  },
+  "Email": {
+    "AppUrl": "https://localhost:5001",
+    "SenderName": "Alice Identity Service",
+    "SenderEmail": "ais@localhost.localdomain",
+    "SendGridKey": "abcXYZ"
+  },
   "Serilog": {
     "Using": [
       "Serilog.Sinks.File"
