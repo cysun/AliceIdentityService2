@@ -3,6 +3,7 @@ using System.Text;
 using AliceIdentityService.Models;
 using AliceIdentityService.Services;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
@@ -133,6 +134,12 @@ namespace AliceIdentityService.Controllers
         }
 
         public IActionResult AccessDenied()
+        {
+            return View();
+        }
+
+        [Authorize]
+        public IActionResult Profile()
         {
             return View();
         }
