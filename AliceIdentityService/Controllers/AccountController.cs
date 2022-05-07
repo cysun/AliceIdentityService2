@@ -78,6 +78,7 @@ namespace AliceIdentityService.Controllers
 
             var user = _mapper.Map<User>(input);
             user.UserName = input.Email;
+            user.ScreenName = $"{input.FirstName} {input.LastName}";
             var result = await _userManager.CreateAsync(user, input.Password);
             if (result.Succeeded)
             {

@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.WebHost.UseUrls("http://localhost:5000");
+// builder.WebHost.UseUrls("http://localhost:5000");
 builder.Host.UseSerilog((hostingContext, loggerConfiguration) =>
     loggerConfiguration.ReadFrom.Configuration(hostingContext.Configuration));
 
@@ -15,7 +15,23 @@ var services = builder.Services;
 // Configure Services
 
 services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
+{
+    options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"));
+    options.UseOpenIddict();
+});
+
+services.AddOpenIddict()
+    .AddCore(options =>
+    {
+        options.UseEntityFrameworkCore().UseDbContext<AppDbContext>();
+    })
+    .AddServer(options =>
+    {
+        options.AllowClientCredentialsFlow();
+        options.SetTokenEndpointUris("/connect/token");
+        options.AddDevelopmentEncryptionCertificate().AddDevelopmentSigningCertificate();
+        options.UseAspNetCore().EnableTokenEndpointPassthrough();
+    });
 
 // services.AddDefaultIdentity() is part of Identity UI which is not used in this project.
 // see https://github.com/aspnet/Identity/blob/master/src/UI/IdentityServiceCollectionUIExtensions.cs for

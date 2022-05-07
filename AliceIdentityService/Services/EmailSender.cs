@@ -34,7 +34,7 @@ namespace AliceIdentityService.Services
             var email = _email
                  .Tag("AIS") // See https://github.com/lukencode/FluentEmail/issues/317
                  .Subject("AIS - Email Verification")
-                 .To(user.Email, user.Name)
+                 .To(user.Email, user.FullName)
                  .UsingTemplateFromFile($"{_templateFolder}/EmailVerification.Body.txt",
                     new { link = $"{_settings.AppUrl}{link}" });
 

@@ -2,6 +2,7 @@ using System.Security.Claims;
 using AliceIdentityService.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
+using OpenIddict.Abstractions;
 
 namespace AliceIdentityService.Services
 {
@@ -20,6 +21,7 @@ namespace AliceIdentityService.Services
             {
                 new Claim(ClaimTypes.GivenName, user.FirstName),
                 new Claim(ClaimTypes.Surname, user.LastName),
+                new Claim(OpenIddictConstants.Claims.Nickname, user.ScreenName),
             };
             identity.AddClaims(claims);
 

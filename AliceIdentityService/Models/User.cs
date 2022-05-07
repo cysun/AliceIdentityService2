@@ -11,6 +11,9 @@ namespace AliceIdentityService.Models
         [Required, MaxLength(255), PersonalData]
         public string LastName { get; set; }
 
-        public string Name => $"{FirstName} {LastName}";
+        [Required, MaxLength(255)]
+        public string ScreenName { get; set; }
+
+        public string FullName => $"{FirstName} {LastName}";
     }
 }
