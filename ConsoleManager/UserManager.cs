@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using AliceIdentityService.Models;
 
 partial class ConsoleManager
@@ -21,7 +22,7 @@ partial class ConsoleManager
                     int index;
                     bool isNumber = int.TryParse(cmd, out index);
                     if (isNumber && index < users.Count)
-                        await UserViewAsync(users[index]);
+                        await UserControllerAsync(users[index]);
                     break;
             }
         } while (!done);
@@ -46,28 +47,6 @@ partial class ConsoleManager
             choice = Console.ReadLine().ToLower();
         } while (!validChoices.Contains(choice));
         return choice;
-    }
-
-    private async Task UserViewAsync(User user)
-    {
-        Console.Clear();
-        Console.WriteLine($"\t User Management - {user.UserName} \n");
-        var claims = await userManager.GetClaimsAsync(user);
-        foreach (var claim in claims)
-            Console.WriteLine($"\t\t {claim.Type}: {claim.Value}");
-
-        Console.Write("\n\t Add a claim? [y|n] ");
-        var ans = Console.ReadLine().ToLower();
-        while (ans == "y")
-        {
-            Console.Write("\t Claim Type: ");
-            var claimType = Console.ReadLine();
-            Console.Write("\t Claim Value: ");
-            var claimValue = Console.ReadLine();
-            await userManager.AddClaimAsync(user, new System.Security.Claims.Claim(claimType, claimValue));
-            Console.Write("\t Add another claim? [y|n] ");
-            ans = Console.ReadLine().ToLower();
-        }
     }
 
     private async Task AddUserAsync()
@@ -109,5 +88,65 @@ partial class ConsoleManager
                 Console.ReadLine();
             }
         }
+    }
+
+    private async Task UserControllerAsync(User user)
+    {
+        var done = false;
+        do
+        {
+            var claims = await userManager.GetClaimsAsync(user);
+            var cmd = UserView(user, claims);
+            switch (cmd)
+            {
+                case "a":
+                    await AddClaimAsync(user);
+                    break;
+                case "b":
+                    done = true;
+                    break; ;
+            }
+        } while (!done);
+    }
+
+    private string UserView(User user, IList<Claim> claims)
+    {
+        string choice;
+        var validChoices = new HashSet<string>() { "a", "b" };
+        do
+        {
+            Console.Clear();
+            Console.WriteLine($"\t User Management - {user.FullName} \n");
+            Console.WriteLine($"\t First Name: \t {user.FirstName}");
+            Console.WriteLine($"\t Last Name: \t {user.LastName}");
+            Console.WriteLine($"\t Screen Name: \t {user.ScreenName}");
+            Console.WriteLine($"\t Email: \t {user.Email}");
+            Console.Write($"\t Claims: \t [");
+            foreach (var claim in claims)
+                Console.Write($" {claim.Type}:{claim.Value}");
+            Console.WriteLine(" ] \n");
+            Console.WriteLine("\t a) Add a claim");
+            Console.WriteLine("\t b) Back to Users Menu");
+            Console.Write("\n Pleasse enter your choice: ");
+            choice = Console.ReadLine().ToLower();
+        } while (!validChoices.Contains(choice));
+        return choice;
+    }
+
+    private async Task AddClaimAsync(User user)
+    {
+        Console.Clear();
+        Console.WriteLine($"\t User Management - {user.FullName} - Add Claim\n");
+        string ans;
+        do
+        {
+            Console.Write("\t Claim Type: ");
+            var claimType = Console.ReadLine();
+            Console.Write("\t Claim Value: ");
+            var claimValue = Console.ReadLine();
+            await userManager.AddClaimAsync(user, new Claim(claimType, claimValue));
+            Console.Write("\t Add another claim? [y|n] ");
+            ans = Console.ReadLine().ToLower();
+        } while (ans == "y");
     }
 }

@@ -4,6 +4,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using OpenIddict.Abstractions;
+using OpenIddict.Core;
+using OpenIddict.EntityFrameworkCore.Models;
 
 await (new ConsoleManager()).MainControllerAsync();
 
@@ -11,7 +14,13 @@ partial class ConsoleManager
 {
     readonly ServiceProvider serviceProvider;
 
-    UserManager<User> userManager => serviceProvider.GetService<UserManager<User>>();
+    UserManager<User> userManager => serviceProvider.GetRequiredService<UserManager<User>>();
+
+    IOpenIddictApplicationManager applicationManager =>
+        serviceProvider.GetRequiredService<IOpenIddictApplicationManager>();
+
+    OpenIddictScopeManager<OpenIddictEntityFrameworkCoreScope> scopeManager =>
+        serviceProvider.GetRequiredService<OpenIddictScopeManager<OpenIddictEntityFrameworkCoreScope>>();
 
     public ConsoleManager()
     {
@@ -21,15 +30,15 @@ partial class ConsoleManager
             .Build();
 
         var services = new ServiceCollection();
-        
+
         services.AddOptions().AddLogging();
-        
+
         services.AddDbContext<AppDbContext>(options =>
         {
             options.UseNpgsql(config.GetConnectionString("DefaultConnection"));
             options.UseOpenIddict();
         });
-        
+
         services.AddOpenIddict()
             .AddCore(options =>
             {
@@ -39,14 +48,14 @@ partial class ConsoleManager
             {
                 options.AddDevelopmentEncryptionCertificate().AddDevelopmentSigningCertificate();
             });
-       
+
         services.AddIdentityCore<User>(options =>
         {
             options.SignIn.RequireConfirmedEmail = true;
         })
         .AddEntityFrameworkStores<AppDbContext>()
         .AddDefaultTokenProviders();
-        
+
         services.AddAuthentication();
 
         serviceProvider = services.BuildServiceProvider();
@@ -63,6 +72,9 @@ partial class ConsoleManager
                 case "u":
                     await UsersControllerAsync();
                     break;
+                case "s":
+                    await ScopesControllerAsync();
+                    break;
                 case "x":
                     done = true;
                     break;
@@ -74,13 +86,14 @@ partial class ConsoleManager
 
     public string MainView()
     {
-        var validChoices = new HashSet<string>() { "u", "x" };
+        var validChoices = new HashSet<string>() { "u", "s", "x" };
         string choice;
         do
         {
             Console.Clear();
             Console.WriteLine("\t Main Menu \n");
             Console.WriteLine("\t u) User Management");
+            Console.WriteLine("\t s) Scope Management");
             Console.WriteLine("\t x) Exit");
             Console.Write("\n  Pleasse enter your choice: ");
             choice = Console.ReadLine().ToLower();
