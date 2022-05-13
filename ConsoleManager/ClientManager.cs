@@ -117,7 +117,7 @@ partial class ConsoleManager
             switch (cmd)
             {
                 case "a":
-                    // await AddClaimAsync(scope);
+                    await AddScopeControllerAsync(client);
                     break;
                 case "b":
                     done = true;
@@ -139,8 +139,68 @@ partial class ConsoleManager
             Console.WriteLine($"\t Display Name: \t {client.DisplayName}");
             Console.WriteLine($"\t Permissions: \t {client.Permissions}");
             Console.WriteLine($"\t Return URIs: \t {client.RedirectUris} \n");
-            Console.WriteLine("\t a) Add a scope");
+            Console.WriteLine("\t a) Add a Scope");
             Console.WriteLine("\t b) Back to Clients Menu");
+            Console.Write("\n Pleasse enter your choice: ");
+            choice = Console.ReadLine().ToLower();
+        } while (!validChoices.Contains(choice));
+        return choice;
+    }
+
+    private async Task AddScopeControllerAsync(OpenIddictEntityFrameworkCoreApplication client)
+    {
+        var descriptor = new OpenIddictApplicationDescriptor();
+        await applicationManager.PopulateAsync(descriptor, client);
+        var standardScopes = new string[] { "address", "email", "phone", "profile", "roles" };
+        var done = false;
+        do
+        {
+            var allowedScopes = descriptor.Permissions
+                .Where(p => p.StartsWith(OpenIddictConstants.Permissions.Prefixes.Scope))
+                .Select(p => p.Substring(OpenIddictConstants.Permissions.Prefixes.Scope.Length))
+                .ToList();
+            var customScopes = await scopeManager.ListAsync()
+                .Select(s => s.Name)
+                .ToListAsync();
+            var availableScopes = standardScopes
+                .Union(customScopes)
+                .Where(s => !allowedScopes.Contains(s))
+                .ToList();
+            var cmd = AddScopeView(client, availableScopes);
+            switch (cmd)
+            {
+                case "b":
+                    done = true;
+                    break;
+                default:
+                    int index;
+                    bool isNumber = int.TryParse(cmd, out index);
+                    if (isNumber && index < availableScopes.Count)
+                    {
+                        descriptor.Permissions.Add(OpenIddictConstants.Permissions.Prefixes.Scope +
+                            availableScopes[index]);
+                        await applicationManager.UpdateAsync(client, descriptor);
+                    }
+                    break;
+            }
+        } while (!done);
+    }
+
+    private string AddScopeView(OpenIddictEntityFrameworkCoreApplication client,
+    List<string> availableScopes)
+    {
+        var validChoices = new HashSet<string>() { "b" };
+        for (int i = 0; i < availableScopes.Count; ++i)
+            validChoices.Add(i.ToString());
+
+        string choice;
+        do
+        {
+            Console.Clear();
+            Console.WriteLine($"\t Scope Management - {client.ClientId} - Add Scope \n");
+            Console.WriteLine("\t b) Back to Main Menu \n");
+            for (int i = 0; i < availableScopes.Count; i++)
+                Console.WriteLine($"\t {i}) {availableScopes[i]}");
             Console.Write("\n Pleasse enter your choice: ");
             choice = Console.ReadLine().ToLower();
         } while (!validChoices.Contains(choice));
