@@ -28,6 +28,8 @@ services.AddOpenIddict()
     .AddServer(options =>
     {
         options.AllowClientCredentialsFlow();
+        options.IgnoreEndpointPermissions();
+        options.IgnoreResponseTypePermissions();
         options.SetTokenEndpointUris("/connect/token");
         options.AddDevelopmentEncryptionCertificate().AddDevelopmentSigningCertificate();
         options.UseAspNetCore().EnableTokenEndpointPassthrough();

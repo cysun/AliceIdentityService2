@@ -16,8 +16,8 @@ partial class ConsoleManager
 
     UserManager<User> userManager => serviceProvider.GetRequiredService<UserManager<User>>();
 
-    IOpenIddictApplicationManager applicationManager =>
-        serviceProvider.GetRequiredService<IOpenIddictApplicationManager>();
+    OpenIddictApplicationManager<OpenIddictEntityFrameworkCoreApplication> applicationManager =>
+        serviceProvider.GetRequiredService<OpenIddictApplicationManager<OpenIddictEntityFrameworkCoreApplication>>();
 
     OpenIddictScopeManager<OpenIddictEntityFrameworkCoreScope> scopeManager =>
         serviceProvider.GetRequiredService<OpenIddictScopeManager<OpenIddictEntityFrameworkCoreScope>>();
@@ -75,6 +75,9 @@ partial class ConsoleManager
                 case "s":
                     await ScopesControllerAsync();
                     break;
+                case "c":
+                    await ClientsControllerAsync();
+                    break;
                 case "x":
                     done = true;
                     break;
@@ -86,7 +89,7 @@ partial class ConsoleManager
 
     public string MainView()
     {
-        var validChoices = new HashSet<string>() { "u", "s", "x" };
+        var validChoices = new HashSet<string>() { "u", "s", "c", "x" };
         string choice;
         do
         {
@@ -94,6 +97,7 @@ partial class ConsoleManager
             Console.WriteLine("\t Main Menu \n");
             Console.WriteLine("\t u) User Management");
             Console.WriteLine("\t s) Scope Management");
+            Console.WriteLine("\t c) Client Management");
             Console.WriteLine("\t x) Exit");
             Console.Write("\n  Pleasse enter your choice: ");
             choice = Console.ReadLine().ToLower();

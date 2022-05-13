@@ -55,26 +55,25 @@ partial class ConsoleManager
     {
         Console.Clear();
         Console.WriteLine("\t Add Scope\n");
+
+        var scope = new OpenIddictScopeDescriptor();
+
         Console.Write("\t Name: ");
-        var name = Console.ReadLine();
+        scope.Name = Console.ReadLine();
         Console.Write("\t Display Name: ");
-        var displayName = Console.ReadLine();
+        scope.DisplayName = Console.ReadLine();
+
         Console.Write("\t Save or Cancel? [s|c] ");
         var cmd = Console.ReadLine();
         if (cmd.ToLower() == "s")
         {
-            var scope = new OpenIddictScopeDescriptor
-            {
-                Name = name,
-                DisplayName = displayName,
-            };
             try
             {
                 await scopeManager.CreateAsync(scope);
             }
             catch (Exception ex)
             {
-                Console.WriteLine("\n\t Failed to create the API scope");
+                Console.WriteLine("\n\t Failed to create the scope");
                 Console.WriteLine($"\t {ex.Message}");
                 Console.Write("\n\n\t Press [Enter] key to continue");
                 Console.ReadLine();
