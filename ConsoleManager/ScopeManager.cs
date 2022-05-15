@@ -1,3 +1,4 @@
+using System.Text.Json;
 using OpenIddict.Abstractions;
 using OpenIddict.EntityFrameworkCore.Models;
 
@@ -67,17 +68,8 @@ partial class ConsoleManager
         var cmd = Console.ReadLine();
         if (cmd.ToLower() == "s")
         {
-            try
-            {
-                await scopeManager.CreateAsync(scope);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("\n\t Failed to create the scope");
-                Console.WriteLine($"\t {ex.Message}");
-                Console.Write("\n\n\t Press [Enter] key to continue");
-                Console.ReadLine();
-            }
+            scope.Properties["claims"] = JsonSerializer.SerializeToElement(new string[] { });
+            await scopeManager.CreateAsync(scope);
         }
     }
 
@@ -110,7 +102,7 @@ partial class ConsoleManager
             Console.WriteLine($"\t Scope Management - {scope.Name} \n");
             Console.WriteLine($"\t Name: \t\t {scope.Name}");
             Console.WriteLine($"\t Display Name: \t {scope.DisplayName}");
-            Console.WriteLine($"\t Claims: \t {scope.Resources} \n");
+            Console.WriteLine($"\t Properties: \t {scope.Properties} \n");
             Console.WriteLine("\t a) Add a claim");
             Console.WriteLine("\t b) Back to Scopes Menu");
             Console.Write("\n Pleasse enter your choice: ");
@@ -130,7 +122,9 @@ partial class ConsoleManager
             var newClaim = Console.ReadLine();
             var descriptor = new OpenIddictScopeDescriptor();
             await scopeManager.PopulateAsync(descriptor, scope);
-            descriptor.Resources.Add(newClaim);
+            var claims = descriptor.Properties["claims"].EnumerateArray().Select(e => e.GetString()).ToList();
+            claims.Add(newClaim);
+            descriptor.Properties["claims"] = JsonSerializer.SerializeToElement(claims);
             await scopeManager.UpdateAsync(scope, descriptor);
             Console.Write("\t Add another claim? [y|n] ");
             ans = Console.ReadLine().ToLower();

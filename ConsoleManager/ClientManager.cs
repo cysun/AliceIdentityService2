@@ -151,7 +151,6 @@ partial class ConsoleManager
     {
         var descriptor = new OpenIddictApplicationDescriptor();
         await applicationManager.PopulateAsync(descriptor, client);
-        var standardScopes = new string[] { "address", "email", "phone", "profile", "roles" };
         var done = false;
         do
         {
@@ -159,13 +158,10 @@ partial class ConsoleManager
                 .Where(p => p.StartsWith(OpenIddictConstants.Permissions.Prefixes.Scope))
                 .Select(p => p.Substring(OpenIddictConstants.Permissions.Prefixes.Scope.Length))
                 .ToList();
-            var customScopes = await scopeManager.ListAsync()
+            var availableScopes = await scopeManager.ListAsync()
                 .Select(s => s.Name)
-                .ToListAsync();
-            var availableScopes = standardScopes
-                .Union(customScopes)
                 .Where(s => !allowedScopes.Contains(s))
-                .ToList();
+                .ToListAsync();
             var cmd = AddScopeView(client, availableScopes);
             switch (cmd)
             {
@@ -186,8 +182,7 @@ partial class ConsoleManager
         } while (!done);
     }
 
-    private string AddScopeView(OpenIddictEntityFrameworkCoreApplication client,
-    List<string> availableScopes)
+    private string AddScopeView(OpenIddictEntityFrameworkCoreApplication client, List<string> availableScopes)
     {
         var validChoices = new HashSet<string>() { "b" };
         for (int i = 0; i < availableScopes.Count; ++i)

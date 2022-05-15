@@ -1,3 +1,4 @@
+using System.Text.Json;
 using AliceIdentityService.Models;
 using AliceIdentityService.Services;
 using Microsoft.AspNetCore.Identity;
@@ -63,6 +64,29 @@ partial class ConsoleManager
 
     public async Task MainControllerAsync()
     {
+        // Pre-create standard scopes and the associated claims. OpenIddict grants "openid" and "offline_access"
+        // by default. OpenIddict also supports a "roles" scope which we will ignore.
+        var standardScopes = new Dictionary<string, string[]>()
+        {
+            {"email", new string[]{"email", "email_verified" } },
+            {"address", new string[]{ "address" } },
+            {"profile", new string[]{ "name", "family_name", "given_name", "middle_name", "nickname",
+                "preferred_username", "profile", "picture", "website", "gender", "birthdate",
+                "zoneinfo", "locale", "updated_at" } },
+            {"phone", new string[]{"phone_number", "phone_number_verified"} }
+        };
+        foreach (var standardScope in standardScopes)
+        {
+            if (await scopeManager.FindByNameAsync(standardScope.Key) == null)
+            {
+                var descriptor = new OpenIddictScopeDescriptor();
+                descriptor.Name = standardScope.Key;
+                descriptor.DisplayName = standardScope.Key;
+                descriptor.Properties["claims"] = JsonSerializer.SerializeToElement(standardScope.Value);
+                await scopeManager.CreateAsync(descriptor);
+            }
+        }
+
         var done = false;
         do
         {
