@@ -2,7 +2,7 @@ using System.Security.Claims;
 using AliceIdentityService.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
-using OpenIddict.Abstractions;
+using static OpenIddict.Abstractions.OpenIddictConstants;
 
 namespace AliceIdentityService.Services
 {
@@ -15,14 +15,17 @@ namespace AliceIdentityService.Services
 
         protected override async Task<ClaimsIdentity> GenerateClaimsAsync(User user)
         {
+            // Claims in AspNetUserClaims are added here.
             var identity = await base.GenerateClaimsAsync(user);
 
+            // Add the claims based on User properties. 
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.GivenName, user.FirstName),
-                new Claim(ClaimTypes.Surname, user.LastName),
-                new Claim(OpenIddictConstants.Claims.Nickname, user.ScreenName),
+                new Claim(Claims.GivenName, user.FirstName),
+                new Claim(Claims.FamilyName, user.LastName),
+                new Claim(Claims.Nickname, user.ScreenName),
             };
+
             identity.AddClaims(claims);
 
             return identity;

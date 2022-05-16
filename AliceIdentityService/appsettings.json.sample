@@ -1,4 +1,7 @@
 {
+  "Application": {
+    "CertificateFolder": "D:/Temp/AliceIdentityService2"
+  },
   "ConnectionStrings": {
     "DefaultConnection": "Host=localhost;Database=ais2;Username=cysun;Password=abcd"
   },
@@ -26,7 +29,8 @@
       "Default": "Information",
       "Override": {
         "Microsoft": "Warning",
-        "System": "Warning"
+        "System": "Warning",
+        "Quartz": "Warning"
       }
     },
     "Enrich": [
