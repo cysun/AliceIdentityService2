@@ -193,7 +193,7 @@ partial class ConsoleManager
         {
             Console.Clear();
             Console.WriteLine($"\t Scope Management - {client.ClientId} - Add Scope \n");
-            Console.WriteLine("\t b) Back to Main Menu \n");
+            Console.WriteLine("\t b) Back to Client Menu \n");
             for (int i = 0; i < availableScopes.Count; i++)
                 Console.WriteLine($"\t {i}) {availableScopes[i]}");
             Console.Write("\n Pleasse enter your choice: ");

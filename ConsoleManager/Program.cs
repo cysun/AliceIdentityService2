@@ -102,6 +102,9 @@ partial class ConsoleManager
                 case "c":
                     await ClientsControllerAsync();
                     break;
+                case "t":
+                    GenerateCertificates();
+                    break;
                 case "x":
                     done = true;
                     break;
@@ -113,7 +116,7 @@ partial class ConsoleManager
 
     public string MainView()
     {
-        var validChoices = new HashSet<string>() { "u", "s", "c", "x" };
+        var validChoices = new HashSet<string>() { "u", "s", "c", "t", "x" };
         string choice;
         do
         {
@@ -122,6 +125,7 @@ partial class ConsoleManager
             Console.WriteLine("\t u) User Management");
             Console.WriteLine("\t s) Scope Management");
             Console.WriteLine("\t c) Client Management");
+            Console.WriteLine("\t t) Generate Certificates");
             Console.WriteLine("\t x) Exit");
             Console.Write("\n  Pleasse enter your choice: ");
             choice = Console.ReadLine().ToLower();
