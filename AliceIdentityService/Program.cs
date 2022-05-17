@@ -48,7 +48,7 @@ services.AddOpenIddict()
         options.AddEncryptionCertificate(new X509Certificate2(Path.Combine(configuration["Application:CertificateFolder"], "encryption-certificate.pfx")));
         options.AddSigningCertificate(new X509Certificate2(Path.Combine(configuration["Application:CertificateFolder"], "signing-certificate.pfx")));
         options.UseAspNetCore().EnableTokenEndpointPassthrough().EnableAuthorizationEndpointPassthrough();
-        // options.DisableAccessTokenEncryption(); // for testing
+        options.DisableAccessTokenEncryption(); // for testing
     });
 
 // services.AddDefaultIdentity() is part of Identity UI which is not used in this project.
