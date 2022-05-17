@@ -15,7 +15,7 @@ partial class ConsoleManager
         GenerateSigningCertificate();
         Console.WriteLine("Done!");
         Console.Write("\n\t Press any key to go back to Main Menu");
-        _ = Console.ReadKey(true);
+        Console.ReadKey(true);
     }
 
     private void GenerateEncryptionCertificate()

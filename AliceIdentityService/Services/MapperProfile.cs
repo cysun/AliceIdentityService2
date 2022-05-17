@@ -1,13 +1,12 @@
 using AliceIdentityService.Models;
 using AutoMapper;
 
-namespace AliceIdentityService.Services
+namespace AliceIdentityService.Services;
+
+public class MapperProfile : Profile
 {
-    public class MapperProfile : Profile
+    public MapperProfile()
     {
-        public MapperProfile()
-        {
-            CreateMap<RegistrationInputModel, User>();
-        }
+        CreateMap<RegistrationInputModel, User>();
     }
 }
