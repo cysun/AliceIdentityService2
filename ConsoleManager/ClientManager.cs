@@ -66,7 +66,8 @@ partial class ConsoleManager
                 OpenIddictConstants.Permissions.GrantTypes.RefreshToken,
                 OpenIddictConstants.Permissions.Scopes.Profile,
                 OpenIddictConstants.Permissions.Scopes.Email
-            }
+            },
+            ConsentType = OpenIddictConstants.ConsentTypes.Implicit
         };
 
         Console.Write("\t Client Id: ");
