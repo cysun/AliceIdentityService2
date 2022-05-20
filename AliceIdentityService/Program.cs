@@ -1,6 +1,7 @@
 using System.Security.Cryptography.X509Certificates;
 using AliceIdentityService.Models;
 using AliceIdentityService.Services;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Quartz;
@@ -97,12 +98,18 @@ services.AddScoped<EmailSender>();
 services.AddAutoMapper(config => config.AddProfile<MapperProfile>());
 
 services.AddControllersWithViews();
+services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+});
 
 // Build App
 
 var app = builder.Build();
 
 // Configure Middleware Pipeline
+
+app.UseForwardedHeaders();
 
 if (!environment.IsDevelopment())
     app.UseExceptionHandler("/Home/Error");
