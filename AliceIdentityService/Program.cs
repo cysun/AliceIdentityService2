@@ -8,12 +8,17 @@ using Serilog;
 using static OpenIddict.Abstractions.OpenIddictConstants;
 
 var builder = WebApplication.CreateBuilder(args);
-// builder.WebHost.UseUrls("http://localhost:5000");
-builder.Host.UseSerilog((hostingContext, loggerConfiguration) =>
-    loggerConfiguration.ReadFrom.Configuration(hostingContext.Configuration));
 
+var environment = builder.Environment;
 var configuration = builder.Configuration;
 var services = builder.Services;
+
+// In production, this app will sit behind a Nginx reverse proxy with HTTPS
+if (!environment.IsDevelopment())
+    builder.WebHost.UseUrls("http://localhost:5000");
+
+builder.Host.UseSerilog((hostingContext, loggerConfiguration) =>
+    loggerConfiguration.ReadFrom.Configuration(hostingContext.Configuration));
 
 // Configure Services
 
@@ -99,7 +104,7 @@ var app = builder.Build();
 
 // Configure Middleware Pipeline
 
-if (!app.Environment.IsDevelopment())
+if (!environment.IsDevelopment())
     app.UseExceptionHandler("/Home/Error");
 
 app.UseStaticFiles();
