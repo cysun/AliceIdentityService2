@@ -1,0 +1,91 @@
+@model User
+@{
+    ViewData["Title"] = "View User";
+}
+<nav>
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-action="Index">Users</a></li>
+        <li class="breadcrumb-item active me-auto">@Model.FullName</li>
+        <li><a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary btn-sm">Edit</a></li>
+    </ol>
+</nav>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">Account</div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-6">
+                        <div class="form-floating mb-3">
+                            <span class="form-control">@Model.FirstName</span>
+                            <label>First Name</label>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-floating mb-3">
+                            <span class="form-control">@Model.LastName</span>
+                            <label>Last Name</label>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-floating mb-3">
+                            <span class="form-control">@Model.ScreenName</span>
+                            <label>Screen Name</label>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-floating mb-3">
+                            <span class="form-control">
+                                @if (Model.EmailConfirmed)
+                                {
+                                    <a href="mailto:@Model.Email">@Model.Email</a>
+                                }
+                                else
+                                {
+                                    @Model.Email
+                                }
+                            </span>
+                            <label>Email</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">Claims</div>
+            <div class="card-body">
+                <form action="../AddClaim" method="post">
+                    <table class="table">
+                        <tbody>
+                            @foreach (var claim in ViewBag.Claims)
+                            {
+                                <tr>
+                                    <th>@claim.Type</th>
+                                    <td>@claim.Value</td>
+                                    <td>
+                                        <a asp-action="RemoveClaim" asp-route-userId="@Model.Id"
+                                       asp-route-claimType="@claim.Type" asp-route-claimValue="@claim.Value"
+                                       class="delete btn btn-danger btn-sm">
+                                            Remove
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                            <tr>
+                                <td><input name="claimType" type="text" class="form-control" /></td>
+                                <td><input name="claimValue" type="text" class="form-control" /></td>
+                                <td>
+                                    <input type="hidden" name="userId" value="@Model.Id" />
+                                    <button class="btn btn-primary btn-sm">Add</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

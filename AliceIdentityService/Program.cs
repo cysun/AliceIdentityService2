@@ -89,6 +89,12 @@ services.ConfigureApplicationCookie(options =>
 
 services.AddScoped<IUserClaimsPrincipalFactory<User>, AppUserClaimsPrincipalFactory>();
 
+services.AddAuthorization(options =>
+{
+    options.AddPolicy(AisConstants.Policy.IsAdmin, policy =>
+        policy.RequireClaim(AisConstants.AdminClaim));
+});
+
 services.AddFluentEmail(configuration["Email:SenderEmail"], configuration["Email:SenderName"])
     .AddSendGridSender(configuration["Email:SendGridKey"])
     .AddLiquidRenderer();
@@ -102,6 +108,8 @@ services.Configure<ForwardedHeadersOptions>(options =>
 {
     options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
 });
+
+services.AddScoped<UserService>();
 
 // Build App
 

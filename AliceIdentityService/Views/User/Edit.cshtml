@@ -1,0 +1,113 @@
+@model EditUserInputModel
+@{
+    ViewData["Title"] = "Edit User";
+}
+<nav>
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-action="Index">Users</a></li>
+        <li class="breadcrumb-item"><a asp-action="View" asp-route-id="@Model.Id">@Model.FullName</a></li>
+        <li class="breadcrumb-item active">Edit</li>
+    </ol>
+</nav>
+
+<div class="row">
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-header">Account</div>
+            <div class="card-body">
+                <form method="post">
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="form-floating mb-3">
+                                <input asp-for="FirstName" class="form-control" placeholder="First Name" required>
+                                <label asp-for="FirstName"></label>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-floating mb-3">
+                                <input asp-for="LastName" class="form-control" placeholder="Last Name" required>
+                                <label asp-for="LastName"></label>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-floating mb-3">
+                                <input asp-for="ScreenName" class="form-control" placeholder="Screen Name" required>
+                                <label asp-for="ScreenName"></label>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-floating mb-3">
+                                <input asp-for="Email" class="form-control" disabled>
+                                <label asp-for="Email"></label>
+                            </div>
+                        </div>
+                        <div class="col-6 d-flex align-items-center">
+                            <div class="form-check form-switch">
+                                <input asp-for="EmailConfirmed" class="form-check-input" role="switch">
+                                <label asp-for="EmailConfirmed" class="form-check-label"></label>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-floating mb-3">
+                                <input asp-for="NewPassword" class="form-control">
+                                <label asp-for="NewPassword"></label>
+                                <div class="form-text">
+                                    Leave password field empty if you do not want to change password.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-floating mb-3">
+                                <input asp-for="ConfirmNewPassword" class="form-control">
+                                <label asp-for="ConfirmNewPassword"></label>
+                                <div class="form-text">
+                                    Passwords must be at least 8 characters long, and contain at least one uppercase character,
+                                    one lowercase character, a digit, and a non-alphanumeric character.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <a class="btn btn-secondary me-2" asp-action="View" asp-route-id="@Model.Id">Cancel</a>
+                            <button type="submit" class="btn btn-primary">Save</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-header">Claims</div>
+            <div class="card-body">
+                <form action="../AddClaim" method="post">
+                    <table class="table">
+                        <tbody>
+                            @foreach (var claim in ViewBag.Claims)
+                            {
+                                <tr>
+                                    <th>@claim.Type</th>
+                                    <td>@claim.Value</td>
+                                    <td>
+                                        <a asp-action="RemoveClaim" asp-route-userId="@Model.Id"
+                                       asp-route-claimType="@claim.Type" asp-route-claimValue="@claim.Value"
+                                       class="delete btn btn-danger btn-sm">
+                                            Remove
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                            <tr>
+                                <td><input name="claimType" type="text" class="form-control" /></td>
+                                <td><input name="claimValue" type="text" class="form-control" /></td>
+                                <td>
+                                    <input type="hidden" name="userId" value="@Model.Id" />
+                                    <button class="btn btn-primary btn-sm">Add</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

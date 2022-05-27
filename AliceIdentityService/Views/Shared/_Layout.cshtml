@@ -1,4 +1,6 @@
-@using OpenIddict.Abstractions;
+@using OpenIddict.Abstractions
+@using Microsoft.AspNetCore.Authorization
+@inject IAuthorizationService AuthorizationService
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -23,16 +25,15 @@
                         <span class="navbar-toggler-icon"></span>
                     </button>
                     <div class="navbar-collapse collapse">
-                        <ul class="navbar-nav flex-grow-1">
-                            <li class="nav-item">
-                                <a class="nav-link" asp-controller="Home" asp-action="Index">Users</a>
-                            </li>
-                        </ul>
                         <ul class="navbar-nav">
+                            @if ((await AuthorizationService.AuthorizeAsync(User, AisConstants.Policy.IsAdmin)).Succeeded)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="User" asp-action="Index">Users</a>
+                                </li>
+                            }
                             <li class="nav-item">
-                                <a class="nav-link" asp-controller="Account" asp-action="Profile">
-                                    @User.FindFirst(c => c.Type == OpenIddictConstants.Claims.Nickname).Value's Profile
-                                </a>
+                                <a class="nav-link" asp-controller="Account" asp-action="Profile">Profile</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" asp-controller="Account" asp-action="Logout">Logout</a>
@@ -43,7 +44,7 @@
             </div>
         </nav>
     </header>
-    <main role="main" class="my-3" style="min-height: 400px;">
+    <main role="main" class="m-3" style="min-height: 400px;">
         @RenderBody()
     </main>
 
@@ -56,5 +57,12 @@
         </div>
     </footer>
     <script src="~/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
+    @if ((await AuthorizationService.AuthorizeAsync(User, AisConstants.Policy.IsAdmin)).Succeeded)
+    {
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+            integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+            crossorigin="anonymous"></script>
+    }
+    @RenderSection("scripts", required: false)
 </body>
 </html>

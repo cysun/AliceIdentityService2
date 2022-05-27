@@ -8,5 +8,6 @@ public class MapperProfile : Profile
     public MapperProfile()
     {
         CreateMap<RegistrationInputModel, User>();
+        CreateMap<User, EditUserInputModel>();
     }
 }
