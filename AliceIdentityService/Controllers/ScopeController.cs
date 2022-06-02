@@ -58,7 +58,7 @@ namespace AliceIdentityService.Controllers
             var descriptor = _mapper.Map<OpenIddictScopeDescriptor>(input);
             descriptor.Properties["claims"] = JsonSerializer.SerializeToElement(new string[] { });
             var scope = await _scopeManager.CreateAsync(descriptor);
-            _logger.LogInformation("{user} created account for {newUser}", User.Identity.Name, scope.Name);
+            _logger.LogInformation("{user} created new scope {scope}", User.Identity.Name, scope.Name);
             return RedirectToAction("View", new { id = scope.Id });
         }
 

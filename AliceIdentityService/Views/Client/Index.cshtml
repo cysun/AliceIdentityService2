@@ -1,0 +1,40 @@
+@model List<OpenIddictEntityFrameworkCoreApplication>
+@{
+    ViewData["Title"] = "Clients";
+}
+<nav>
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item active me-auto">Clients</li>
+        <li><a asp-action="Add" class="btn btn-primary btn-sm">Add</a></li>
+    </ol>
+</nav>
+
+<table class="table table-hover">
+    <thead>
+        <tr><th>Display Name</th><th>Client Id</th><th class="d-none d-md-table-cell">Client Secret</th><th></th></tr>
+    </thead>
+    <tbody>
+        @foreach (var client in Model)
+        {
+            <tr>
+                <td><a asp-action="View" asp-route-id="@client.Id">@client.DisplayName</a></td>
+                <td>@client.ClientId</td>
+                <td class="d-none d-md-table-cell">
+                    @if (string.IsNullOrEmpty(client.ClientSecret))
+                    {
+                        <text>No</text>
+                    }
+                    else
+                    {
+                        <text>Yes</text>
+                    }
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@client.Id" class="btn btn-primary btn-sm">
+                        Edit
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

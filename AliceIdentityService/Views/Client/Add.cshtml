@@ -1,0 +1,61 @@
+@model ApplicationInputModel
+@{
+    ViewData["Title"] = "New Client";
+}
+<nav>
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-action="Index">Clients</a></li>
+        <li class="breadcrumb-item active">New Client</li>
+    </ol>
+</nav>
+
+<div class="row">
+    <div class="col col-lg-6 border bg-light p-3">
+        <form method="post">
+            <div class="form-floating mb-3">
+                <input asp-for="DisplayName" class="form-control" placeholder="Display Name" required>
+                <label asp-for="DisplayName"></label>
+            </div>
+            <div class="form-floating mb-3">
+                <input asp-for="ClientId" class="form-control" placeholder="Client Id">
+                <label asp-for="ClientId"></label>
+            </div>
+            <div class="form-floating mb-3">
+                <div class="input-group">
+                    <input asp-for="ClientSecret" class="form-control" placeholder="Client Secret">
+                    <button class="btn btn-secondary shadow-none" type="button" id="generateSecret">Generate</button>
+                </div>
+                <div class="form-text">Please save the client secret somewhere as you will NOT be able to retrieve it later.</div>
+            </div>
+            <div class="form-floating mb-3">
+                <textarea asp-for="RedirectUris" class="form-control" placeholder="Redirect URIs" style="height: 100px"></textarea>
+                <label asp-for="RedirectUris"></label>
+                <div class="form-text">Please put each URI on a separate line.</div>
+            </div>
+            <div class="form-floating mb-3">
+                <textarea asp-for="PostLogoutRedirectUris" class="form-control" placeholder="Post-Logout Redirect URIs"
+                          style="height: 100px"></textarea>
+                <label asp-for="PostLogoutRedirectUris"></label>
+                <div class="form-text">Please put each URI on a separate line.</div>
+            </div>
+            <a class="btn btn-secondary me-2" asp-action="Index">Cancel</a>
+            <button type="submit" class="btn btn-primary">Add</button>
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        </form>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        $(function() {
+            $("#generateSecret").click(function() {
+                $.ajax({
+                    url: "GenerateSecret",
+                    success: function(resp) {
+                        $("#ClientSecret").val(resp.secret);
+                    }
+                });
+            })
+        });
+    </script>
+}

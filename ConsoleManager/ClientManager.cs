@@ -1,4 +1,4 @@
-using System.Security.Cryptography;
+using AliceIdentityService.Helpers;
 using OpenIddict.Abstractions;
 using OpenIddict.EntityFrameworkCore.Models;
 
@@ -83,10 +83,7 @@ partial class ConsoleManager
         Console.Write("\t Client Secret? [y|n] ");
         if (Console.ReadLine().ToLower() == "y")
         {
-            var bytes = new byte[32];
-            using var rand = RandomNumberGenerator.Create();
-            rand.GetBytes(bytes);
-            client.ClientSecret = Convert.ToBase64String(bytes);
+            client.ClientSecret = Utility.GenerateClientSecret();
             Console.WriteLine($"\t\t {client.ClientSecret}");
         }
 
