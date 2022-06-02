@@ -1,0 +1,34 @@
+@model List<OpenIddictEntityFrameworkCoreScope>
+@{
+    ViewData["Title"] = "Scopes";
+}
+<nav>
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item active me-auto">Scopes</li>
+        <li><a asp-action="Add" class="btn btn-primary btn-sm">Add</a></li>
+    </ol>
+</nav>
+
+<table class="table table-hover">
+    <thead>
+        <tr><th>Name</th><th>Display Name</th><th class="d-none d-lg-table-cell">Description</th><th></th></tr>
+    </thead>
+    <tbody>
+        @foreach (var scope in Model)
+        {
+            <tr>
+                <td><a asp-action="View" asp-route-id="@scope.Id">@scope.Name</a></td>
+                <td>@scope.DisplayName</td>
+                <td class="d-none d-lg-table-cell">@scope.Description</td>
+                <td>
+                    @if (!AisConstants.StandardScopes.Contains(scope.Name))
+                    {
+                        <a asp-action="Edit" asp-route-id="@scope.Id" class="btn btn-primary btn-sm">
+                            Edit
+                        </a>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

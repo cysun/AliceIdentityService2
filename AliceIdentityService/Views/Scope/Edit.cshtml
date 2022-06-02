@@ -1,0 +1,70 @@
+@model ScopeInputModel
+@{
+    ViewData["Title"] = "Edit Scope";
+}
+<nav>
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-action="Index">Scopes</a></li>
+        <li class="breadcrumb-item"><a asp-action="View" asp-route-id="@Model.Id">@Model.Name</a></li>
+        <li class="breadcrumb-item active">Edit</li>
+    </ol>
+</nav>
+
+<div class="row">
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-header">Basics</div>
+            <div class="card-body">
+                <form method="post">
+                    <div class="form-floating mb-3">
+                        <input asp-for="Name" class="form-control" placeholder="Name" required>
+                        <label asp-for="Name"></label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input asp-for="DisplayName" class="form-control" placeholder="Display Name">
+                        <label asp-for="DisplayName"></label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <textarea asp-for="Description" class="form-control" placeholder="Description" style="height: 100px"></textarea>
+                        <label asp-for="Description"></label>
+                    </div>
+                    <a class="btn btn-secondary me-2" asp-action="Index">Cancel</a>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">Claims</div>
+            <div class="card-body">
+                <form action="../AddClaim" method="post">
+                    <table class="table">
+                        <tbody>
+                            @foreach (var claim in ViewBag.Claims)
+                            {
+                                <tr>
+                                    <td>@claim</td>
+                                    <td>
+                                        <a asp-action="RemoveClaim" asp-route-scopeId="@Model.Id" asp-route-claim="@claim"
+                                       class="delete btn btn-danger btn-sm">
+                                            Remove
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                            <tr>
+                                <td><input name="claim" type="text" class="form-control" /></td>
+                                <td>
+                                    <input type="hidden" name="scopeId" value="@Model.Id" />
+                                    <button class="btn btn-primary btn-sm">Add</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

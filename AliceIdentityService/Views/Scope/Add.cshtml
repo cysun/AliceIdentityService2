@@ -1,0 +1,32 @@
+@model ScopeInputModel
+@{
+    ViewData["Title"] = "New Scope";
+}
+<nav>
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-action="Index">Scopes</a></li>
+        <li class="breadcrumb-item active">New Scope</li>
+    </ol>
+</nav>
+
+<div class="row">
+    <div class="col col-lg-6 border bg-light p-3">
+        <form method="post">
+            <div class="form-floating mb-3">
+                <input asp-for="Name" class="form-control" placeholder="Name" required>
+                <label asp-for="Name"></label>
+            </div>
+            <div class="form-floating mb-3">
+                <input asp-for="DisplayName" class="form-control" placeholder="Display Name">
+                <label asp-for="DisplayName"></label>
+            </div>
+            <div class="form-floating mb-3">
+                <textarea asp-for="Description" class="form-control" placeholder="Description" style="height: 100px"></textarea>
+                <label asp-for="Description"></label>
+            </div>
+            <a class="btn btn-secondary me-2" asp-action="Index">Cancel</a>
+            <button type="submit" class="btn btn-primary">Add</button>
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        </form>
+    </div>
+</div>
