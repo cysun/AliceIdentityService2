@@ -88,7 +88,7 @@ namespace AliceIdentityService.Controllers
 
             _mapper.Map(input, descriptor);
             await _scopeManager.UpdateAsync(scope, descriptor);
-            _logger.LogInformation("{user} edited scope {scope}", User.Identity.Name, descriptor.Name);
+            _logger.LogInformation("{user} updated scope {scope}", User.Identity.Name, descriptor.Name);
 
             return RedirectToAction("View", new { id });
         }

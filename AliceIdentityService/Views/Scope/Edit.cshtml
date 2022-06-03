@@ -11,9 +11,9 @@
 </nav>
 
 <div class="row">
-    <div class="col-lg-6">
+    <div class="col-lg-8">
         <div class="card">
-            <div class="card-header">Basics</div>
+            <div class="card-header">Basic Info</div>
             <div class="card-body">
                 <form method="post">
                     <div class="form-floating mb-3">
@@ -28,16 +28,16 @@
                         <textarea asp-for="Description" class="form-control" placeholder="Description" style="height: 100px"></textarea>
                         <label asp-for="Description"></label>
                     </div>
-                    <a class="btn btn-secondary me-2" asp-action="Index">Cancel</a>
+                    <a class="btn btn-secondary me-2" asp-action="View" asp-route-id="@Model.Id">Cancel</a>
                     <button type="submit" class="btn btn-primary">Save</button>
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 </form>
             </div>
         </div>
     </div>
-    <div class="col-md-6">
+    <div class="col-lg-4">
         <div class="card">
-            <div class="card-header">Claims</div>
+            <div class="card-header">Associated Claims</div>
             <div class="card-body">
                 <form action="../AddClaim" method="post">
                     <table class="table">

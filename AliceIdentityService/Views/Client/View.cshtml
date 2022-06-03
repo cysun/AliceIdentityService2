@@ -1,0 +1,119 @@
+@model OpenIddictApplicationDescriptor
+@{
+    ViewData["Title"] = "View Client";
+}
+<nav>
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-action="Index">Clients</a></li>
+        <li class="breadcrumb-item active me-auto">@Model.DisplayName</li>
+        <li><a asp-action="Edit" asp-route-id="@ViewBag.Client.Id" class="btn btn-primary btn-sm">Edit</a></li>
+    </ol>
+</nav>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">Basic Info</div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-floating mb-3">
+                            <div class="form-control">@Model.DisplayName</div>
+                            <label>Display Name</label>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-floating mb-3">
+                            <span class="form-control">@Model.ClientId</span>
+                            <label>Client Id</label>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-floating mb-3">
+                            <span class="form-control">
+                                @if (!string.IsNullOrEmpty(Model.ClientSecret))
+                                {
+                                    <text>********</text>
+                                }
+                            </span>
+                            <label>Client Secret</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3">
+                            <div class="form-control" style="height: 100px">
+                                @foreach (var uri in Model.RedirectUris)
+                                {
+                                    <div class="my-2">@uri</div>
+                                }
+                            </div>
+                            <label>Redirect URIs</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3">
+                            <div class="form-control" style="height: 100px">
+                                @foreach (var uri in Model.PostLogoutRedirectUris)
+                                {
+                                    <div class="my-2">@uri</div>
+                                }
+                            </div>
+                            <label>Post-Logout Redirect URIs</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header">Allowed Scopes</div>
+            <div class="card-body">
+                <form action="../AddScope" method="post">
+                    <table class="table">
+                        <tbody>
+                            @foreach (var scope in ViewBag.Scopes)
+                            {
+                                <tr>
+                                    <td>@scope</td>
+                                    <td>
+                                        <a asp-action="RemoveScope" asp-route-clientId="@ViewBag.Client.Id"
+                                       asp-route-scope="@scope" class="delete btn btn-danger btn-sm">
+                                            Remove
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                            <tr>
+                                <td>
+                                    <select name="scope" class="form-select">
+                                        <option></option>
+                                        @foreach (var scope in ViewBag.AvailableScopes)
+                                        {
+                                            <option>@scope</option>
+                                        }
+                                    </select>
+                                </td>
+                                <td>
+                                    <input type="hidden" name="clientId" value="@ViewBag.Client.Id" />
+                                    <button id="addScopeBtn" class="btn btn-primary btn-sm">Add</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        $(function() {
+            $("#addScopeBtn").prop("disabled", true);
+            $("select").change(function() {
+                $("#addScopeBtn").prop("disabled", $(this).val() == "");
+            });
+        });
+    </script>
+}

@@ -13,14 +13,17 @@ namespace AliceIdentityService.Controllers
     [Authorize(Policy = AisConstants.Policy.IsAdmin)]
     public class ClientController : Controller
     {
+        private readonly OpenIddictScopeManager<OpenIddictEntityFrameworkCoreScope> _scopeManager;
         private readonly OpenIddictApplicationManager<OpenIddictEntityFrameworkCoreApplication> _applicationManager;
 
         private readonly IMapper _mapper;
         private readonly ILogger<ClientController> _logger;
 
-        public ClientController(OpenIddictApplicationManager<OpenIddictEntityFrameworkCoreApplication> applicationManager,
+        public ClientController(OpenIddictScopeManager<OpenIddictEntityFrameworkCoreScope> scopeManager,
+            OpenIddictApplicationManager<OpenIddictEntityFrameworkCoreApplication> applicationManager,
             IMapper mapper, ILogger<ClientController> logger)
         {
+            _scopeManager = scopeManager;
             _applicationManager = applicationManager;
             _mapper = mapper;
             _logger = logger;
@@ -32,15 +35,28 @@ namespace AliceIdentityService.Controllers
         }
 
         [HttpGet]
-        public IActionResult Add()
+        public async Task<IActionResult> ViewAsync(string id)
         {
-            return View(new ApplicationInputModel());
+            var client = await _applicationManager.FindByIdAsync(id);
+            if (client == null) return NotFound();
+
+            var descriptor = new OpenIddictApplicationDescriptor();
+            await _applicationManager.PopulateAsync(descriptor, client);
+            var allowedScopes = Utility.GetAllowedScopes(descriptor);
+            var availableScopes = (await _scopeManager.ListAsync().ToListAsync())
+                .Where(s => !allowedScopes.Contains(s.Name)).Select(s => s.Name);
+
+            ViewBag.Client = client;
+            ViewBag.Scopes = allowedScopes;
+            ViewBag.AvailableScopes = availableScopes;
+
+            return View(descriptor);
         }
 
-        public IActionResult GenerateSecret()
+        [HttpGet]
+        public IActionResult Add()
         {
-            var secret = Utility.GenerateClientSecret();
-            return new JsonResult(new { secret });
+            return View(new ApplicationInputModel() { IsNewClientSecret = true });
         }
 
         [HttpPost]
@@ -64,8 +80,95 @@ namespace AliceIdentityService.Controllers
 
             var client = await _applicationManager.CreateAsync(descriptor);
             _logger.LogInformation("{user} created new client {client}", User.Identity.Name, client.ClientId);
-            // return RedirectToAction("View", new { id = client.Id });
+            return RedirectToAction("View", new { id = client.Id });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> EditAsync(string id)
+        {
+            var client = await _applicationManager.FindByIdAsync(id);
+            if (client == null) return NotFound();
+
+            var descriptor = new OpenIddictApplicationDescriptor();
+            await _applicationManager.PopulateAsync(descriptor, client);
+            var allowedScopes = Utility.GetAllowedScopes(descriptor);
+            var availableScopes = (await _scopeManager.ListAsync().ToListAsync())
+                .Where(s => !allowedScopes.Contains(s.Name)).Select(s => s.Name);
+
+            ViewBag.Client = client;
+            ViewBag.Scopes = allowedScopes;
+            ViewBag.AvailableScopes = availableScopes;
+
+            return View(_mapper.Map<ApplicationInputModel>(descriptor));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditAsync(string id, ApplicationInputModel input)
+        {
+            if (!ModelState.IsValid) return View(input);
+
+            var client = await _applicationManager.FindByIdAsync(id);
+            if (client == null) return NotFound();
+
+            var descriptor = new OpenIddictApplicationDescriptor();
+            await _applicationManager.PopulateAsync(descriptor, client);
+
+            _mapper.Map(input, descriptor);
+            await _applicationManager.UpdateAsync(client, descriptor);
+            _logger.LogInformation("{user} updated client {client}", User.Identity.Name, descriptor.ClientId);
+
+            return RedirectToAction("View", new { id });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> DeleteAsync(string id)
+        {
+            var client = await _applicationManager.FindByIdAsync(id);
+            if (client == null) return NotFound();
+
+            var clientId = client.ClientId;
+            await _applicationManager.DeleteAsync(client);
+            _logger.LogInformation("{user} deleted client {client}", User.Identity.Name, clientId);
+
             return RedirectToAction("Index");
+        }
+
+        public async Task<IActionResult> AddScopeAsync(string clientId, string scope)
+        {
+            var client = await _applicationManager.FindByIdAsync(clientId);
+            if (scope == null) return NotFound();
+
+            var descriptor = new OpenIddictApplicationDescriptor();
+            await _applicationManager.PopulateAsync(descriptor, client);
+
+            descriptor.Permissions.Add(OpenIddictConstants.Permissions.Prefixes.Scope + scope);
+
+            await _applicationManager.UpdateAsync(client, descriptor);
+            _logger.LogInformation("{user} added scope {scope} to {client}", User.Identity.Name, scope, client.ClientId);
+
+            return RedirectToAction("View", new { id = clientId });
+        }
+
+        public async Task<IActionResult> RemoveScopeAsync(string clientId, string scope)
+        {
+            var client = await _applicationManager.FindByIdAsync(clientId);
+            if (scope == null) return NotFound();
+
+            var descriptor = new OpenIddictApplicationDescriptor();
+            await _applicationManager.PopulateAsync(descriptor, client);
+
+            descriptor.Permissions.Remove(OpenIddictConstants.Permissions.Prefixes.Scope + scope);
+
+            await _applicationManager.UpdateAsync(client, descriptor);
+            _logger.LogInformation("{user} removed scope {scope} from {client}", User.Identity.Name, scope, client.ClientId);
+
+            return RedirectToAction("View", new { id = clientId });
+        }
+
+        public IActionResult GenerateSecret()
+        {
+            var secret = Utility.GenerateClientSecret();
+            return new JsonResult(new { secret });
         }
     }
 }
@@ -74,8 +177,6 @@ namespace AliceIdentityService.Models
 {
     public class ApplicationInputModel
     {
-        public string Id { get; set; }
-
         [Display(Name = "Display Name")]
         public string DisplayName { get; set; }
 
@@ -90,5 +191,7 @@ namespace AliceIdentityService.Models
 
         [Display(Name = "Post-Logout Redirect URIs")]
         public string PostLogoutRedirectUris { get; set; }
+
+        public bool IsNewClientSecret { get; set; }
     }
 }

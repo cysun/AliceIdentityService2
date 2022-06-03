@@ -16,11 +16,19 @@ public class MapperProfile : Profile
 
         CreateMap<string, HashSet<Uri>>().ConvertUsing(new StringToUrisConverter());
         CreateMap<HashSet<Uri>, string>().ConvertUsing(new UrisToStringConverter());
+
         CreateMap<ApplicationInputModel, OpenIddictApplicationDescriptor>()
-            .ForMember(dest => dest.Type, opt => opt.MapFrom(src =>
-                string.IsNullOrEmpty(src.ClientSecret) ?
-                    OpenIddictConstants.ClientTypes.Public :
-                    OpenIddictConstants.ClientTypes.Confidential));
+            .ForMember(dest => dest.ClientSecret, opt => opt.Condition(src => src.IsNewClientSecret))
+            .ForMember(dest => dest.Type, opt => opt.MapFrom((src, dest) =>
+            {
+                if (!src.IsNewClientSecret) return dest.Type;
+                return string.IsNullOrEmpty(src.ClientSecret) ?
+                    OpenIddictConstants.ClientTypes.Public : OpenIddictConstants.ClientTypes.Confidential;
+            }));
+
+        CreateMap<OpenIddictApplicationDescriptor, ApplicationInputModel>()
+            .ForMember(dest => dest.ClientSecret, opt => opt.MapFrom(src =>
+                string.IsNullOrEmpty(src.ClientSecret) ? src.ClientSecret : "********"));
     }
 
     public class StringToUrisConverter : ITypeConverter<string, HashSet<Uri>>
