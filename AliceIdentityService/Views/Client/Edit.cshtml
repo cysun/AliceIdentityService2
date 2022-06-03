@@ -4,7 +4,7 @@
 }
 <nav>
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a asp-action="Index">Client</a></li>
+        <li class="breadcrumb-item"><a asp-action="Index">Clients</a></li>
         <li class="breadcrumb-item"><a asp-action="View" asp-route-id="@ViewBag.Client.Id">@Model.DisplayName</a></li>
         <li class="breadcrumb-item active me-auto">Edit</li>
         <li><a asp-action="Delete" asp-route-id="@ViewBag.Client.Id" class="btn btn-danger btn-sm">Delete</a></li>
@@ -33,13 +33,13 @@
                         <div class="form-text">Please save the client secret somewhere as you will NOT be able to retrieve it later.</div>
                     </div>
                     <div class="form-floating mb-3">
-                        <textarea asp-for="RedirectUris" class="form-control" placeholder="Redirect URIs" style="height: 100px"></textarea>
+                        <textarea asp-for="RedirectUris" class="form-control" placeholder="Redirect URIs" style="height: 150px"></textarea>
                         <label asp-for="RedirectUris"></label>
                         <div class="form-text">Please put each URI on a separate line.</div>
                     </div>
                     <div class="form-floating mb-3">
                         <textarea asp-for="PostLogoutRedirectUris" class="form-control" placeholder="Post-Logout Redirect URIs"
-                                  style="height: 100px"></textarea>
+                                  style="height: 150px"></textarea>
                         <label asp-for="PostLogoutRedirectUris"></label>
                         <div class="form-text">Please put each URI on a separate line.</div>
                     </div>

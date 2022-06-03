@@ -13,6 +13,7 @@ await (new ConsoleManager()).MainControllerAsync();
 
 partial class ConsoleManager
 {
+    readonly IConfiguration configuration;
     readonly ServiceProvider serviceProvider;
 
     UserManager<User> userManager => serviceProvider.GetRequiredService<UserManager<User>>();
@@ -25,7 +26,7 @@ partial class ConsoleManager
 
     public ConsoleManager()
     {
-        var config = new ConfigurationBuilder()
+        configuration = new ConfigurationBuilder()
             .SetBasePath(Path.Combine(Directory.GetCurrentDirectory(), "../AliceIdentityService"))
             .AddJsonFile("appsettings.json")
             .Build();
@@ -36,7 +37,7 @@ partial class ConsoleManager
 
         services.AddDbContext<AppDbContext>(options =>
         {
-            options.UseNpgsql(config.GetConnectionString("DefaultConnection"));
+            options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"));
             options.UseOpenIddict();
         });
 

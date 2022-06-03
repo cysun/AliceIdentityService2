@@ -39,9 +39,9 @@
                             <label>Client Secret</label>
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-12">
                         <div class="form-floating mb-3">
-                            <div class="form-control" style="height: 100px">
+                            <div class="form-control" style="height: 150px">
                                 @foreach (var uri in Model.RedirectUris)
                                 {
                                     <div class="my-2">@uri</div>
@@ -50,9 +50,9 @@
                             <label>Redirect URIs</label>
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-12">
                         <div class="form-floating mb-3">
-                            <div class="form-control" style="height: 100px">
+                            <div class="form-control" style="height: 150px">
                                 @foreach (var uri in Model.PostLogoutRedirectUris)
                                 {
                                     <div class="my-2">@uri</div>

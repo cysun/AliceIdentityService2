@@ -8,12 +8,10 @@ partial class ConsoleManager
     {
         Console.Clear();
         Console.WriteLine("\t Certificate Generation \n");
-        Console.Write("\t Generate Encryption Certificate ... ");
+        Console.WriteLine("\t Generate Encryption Certificate ... ");
         GenerateEncryptionCertificate();
-        Console.WriteLine("Done!");
-        Console.Write("\t Generate Signing Certificate ... ");
+        Console.WriteLine("\t Generate Signing Certificate ... ");
         GenerateSigningCertificate();
-        Console.WriteLine("Done!");
         Console.Write("\n\t Press any key to go back to Main Menu");
         Console.ReadKey(true);
     }
@@ -28,7 +26,14 @@ partial class ConsoleManager
 
         var certificate = request.CreateSelfSigned(DateTimeOffset.UtcNow, DateTimeOffset.UtcNow.AddYears(10));
 
-        File.WriteAllBytes("encryption-certificate.pfx", certificate.Export(X509ContentType.Pfx, string.Empty));
+        var file = Path.Combine(configuration["Application:CertificateFolder"], "encryption-certificate.pfx");
+        if (File.Exists(file))
+        {
+            Console.Write("\t\t Certificate file already exists. Do you want to overwrite it? [y|n] ");
+            if (Console.ReadLine().ToLower() != "y") return;
+        }
+        File.WriteAllBytes(file, certificate.Export(X509ContentType.Pfx, string.Empty));
+        Console.WriteLine("\t Done!");
     }
 
     private void GenerateSigningCertificate()
@@ -41,6 +46,13 @@ partial class ConsoleManager
 
         var certificate = request.CreateSelfSigned(DateTimeOffset.UtcNow, DateTimeOffset.UtcNow.AddYears(10));
 
-        File.WriteAllBytes("signing-certificate.pfx", certificate.Export(X509ContentType.Pfx, string.Empty));
+        var file = Path.Combine(configuration["Application:CertificateFolder"], "signing-certificate.pfx");
+        if (File.Exists(file))
+        {
+            Console.Write("\t\t Certificate file already exists. Do you want to overwrite it? [y|n] ");
+            if (Console.ReadLine().ToLower() != "y") return;
+        }
+        File.WriteAllBytes(file, certificate.Export(X509ContentType.Pfx, string.Empty));
+        Console.WriteLine("\t Done!");
     }
 }
