@@ -2,7 +2,7 @@ namespace AliceIdentityService.Models
 {
     public static class AisConstants
     {
-        public const string AdminClaim = "ais-admin";
+        public const string AdminClaim = "ais_admin";
 
         public static HashSet<string> StandardScopes = new HashSet<string>()
         {

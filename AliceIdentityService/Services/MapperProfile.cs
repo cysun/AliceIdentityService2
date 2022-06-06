@@ -38,7 +38,7 @@ public class MapperProfile : Profile
             destination.Clear();
             if (!string.IsNullOrEmpty(source))
             {
-                var uris = source.Split(new string[] { ",", " ", Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries)
+                var uris = source.Split(new string[] { ",", " ", "\n", "\r" }, StringSplitOptions.RemoveEmptyEntries)
                     .Select(s => new Uri(s));
                 destination.UnionWith(uris);
             }

@@ -103,6 +103,7 @@ services.AddScoped<EmailSender>();
 
 services.AddAutoMapper(config => config.AddProfile<MapperProfile>());
 
+services.AddCors();
 services.AddControllersWithViews();
 services.Configure<ForwardedHeadersOptions>(options =>
 {
@@ -124,6 +125,7 @@ if (!environment.IsDevelopment())
 
 app.UseStaticFiles();
 app.UseRouting();
+app.UseCors(option => option.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 app.UseAuthentication();
 app.UseAuthorization();
 
