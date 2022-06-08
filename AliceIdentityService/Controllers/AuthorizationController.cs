@@ -262,10 +262,8 @@ public class AuthorizationController : Controller
     public IActionResult Deny() => Forbid(OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
 
     [HttpGet("~/connect/logout")]
-    public IActionResult Logout() => View();
-
-    [ActionName(nameof(Logout)), HttpPost("~/connect/logout"), ValidateAntiForgeryToken]
-    public async Task<IActionResult> LogoutPost()
+    [HttpPost("~/connect/logout")]
+    public async Task<IActionResult> Logout()
     {
         // Ask ASP.NET Core Identity to delete the local and external cookies created
         // when the user agent is redirected from the external identity provider
