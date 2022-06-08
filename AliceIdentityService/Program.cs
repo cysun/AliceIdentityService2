@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Quartz;
 using Serilog;
+using Serilog.Events;
 using static OpenIddict.Abstractions.OpenIddictConstants;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -46,15 +47,34 @@ services.AddOpenIddict()
     })
     .AddServer(options =>
     {
-        options.AllowAuthorizationCodeFlow().RequireProofKeyForCodeExchange();
         options.IgnoreEndpointPermissions();
-        options.IgnoreResponseTypePermissions();
-        options.SetAuthorizationEndpointUris("/connect/authorize");
-        options.SetTokenEndpointUris("/connect/token");
-        options.AddEncryptionCertificate(new X509Certificate2(Path.Combine(configuration["Application:CertificateFolder"], "encryption-certificate.pfx")));
-        options.AddSigningCertificate(new X509Certificate2(Path.Combine(configuration["Application:CertificateFolder"], "signing-certificate.pfx")));
-        options.UseAspNetCore().EnableTokenEndpointPassthrough().EnableAuthorizationEndpointPassthrough();
-        options.DisableAccessTokenEncryption(); // for testing
+
+        options.AllowAuthorizationCodeFlow()
+               .AllowRefreshTokenFlow();
+
+        options.SetAuthorizationEndpointUris("/connect/authorize")
+               .SetTokenEndpointUris("/connect/token")
+               .SetUserinfoEndpointUris("/connect/userinfo")
+               .SetLogoutEndpointUris("/connect/logout");
+
+        // Don't EnableUserinfoEndpointPassthrough() because it requires access token.
+        options.UseAspNetCore()
+               .EnableAuthorizationEndpointPassthrough()
+               .EnableTokenEndpointPassthrough()
+               .EnableLogoutEndpointPassthrough()
+               .EnableStatusCodePagesIntegration();
+
+        options.RegisterScopes(Scopes.Email, Scopes.Profile);
+
+        options.AddEncryptionCertificate(new X509Certificate2(
+            Path.Combine(configuration["Application:CertificateFolder"], "encryption-certificate.pfx")));
+        options.AddSigningCertificate(new X509Certificate2(
+            Path.Combine(configuration["Application:CertificateFolder"], "signing-certificate.pfx")));
+    })
+    .AddValidation(options =>
+    {
+        options.UseLocalServer();
+        options.UseAspNetCore();
     });
 
 // services.AddDefaultIdentity() is part of Identity UI which is not used in this project.
@@ -123,6 +143,7 @@ app.UseForwardedHeaders();
 if (!environment.IsDevelopment())
     app.UseExceptionHandler("/Home/Error");
 
+app.UseSerilogRequestLogging();
 app.UseStaticFiles();
 app.UseRouting();
 app.UseCors(option => option.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());

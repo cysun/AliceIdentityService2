@@ -6,7 +6,8 @@
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a asp-action="Index">Scopes</a></li>
         <li class="breadcrumb-item"><a asp-action="View" asp-route-id="@Model.Id">@Model.Name</a></li>
-        <li class="breadcrumb-item active">Edit</li>
+        <li class="breadcrumb-item active me-auto">Edit</li>
+        <li><a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger btn-sm">Delete</a></li>
     </ol>
 </nav>
 

@@ -20,7 +20,8 @@ and clients.
 
 ## Current Limitations
 
-AIS only supports Authorization Code and Refresh Token grant types. Client Credentials will be added later.
+AIS only supports Authorization Code and Refresh Token grants and the `code` response type. Client Credentials will be
+added when necessary.
 
 All clients use `implicit` consent type, which means the consent screen is never shown and a user cannot pick and choose
 which requested scopes should be granted to a client. This is sufficent for now as AIS is mainly used for SSO.

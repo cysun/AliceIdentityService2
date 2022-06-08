@@ -28,7 +28,9 @@ public class MapperProfile : Profile
 
         CreateMap<OpenIddictApplicationDescriptor, ApplicationInputModel>()
             .ForMember(dest => dest.ClientSecret, opt => opt.MapFrom(src =>
-                string.IsNullOrEmpty(src.ClientSecret) ? src.ClientSecret : "********"));
+                string.IsNullOrEmpty(src.ClientSecret) ? src.ClientSecret : "********"))
+            .ForMember(dest => dest.IsPkce, opt => opt.MapFrom(src =>
+                src.Requirements.Contains(OpenIddictConstants.Requirements.Features.ProofKeyForCodeExchange)));
     }
 
     public class StringToUrisConverter : ITypeConverter<string, HashSet<Uri>>

@@ -1,6 +1,8 @@
 @model OpenIddictApplicationDescriptor
 @{
     ViewData["Title"] = "View Client";
+    var IsPkce = Model.Requirements.Contains(OpenIddictConstants.Requirements.Features.ProofKeyForCodeExchange) ?
+      "checked" : "";
 }
 <nav>
     <ol class="breadcrumb">
@@ -59,6 +61,12 @@
                                 }
                             </div>
                             <label>Post-Logout Redirect URIs</label>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" style="pointer-events: none;" @IsPkce />
+                            <label class="form-check-label">PKCE</label>
                         </div>
                     </div>
                 </div>

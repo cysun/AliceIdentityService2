@@ -93,6 +93,18 @@ namespace AliceIdentityService.Controllers
             return RedirectToAction("View", new { id });
         }
 
+        [HttpGet]
+        public async Task<IActionResult> DeleteAsync(string id)
+        {
+            var scope = await _scopeManager.FindByIdAsync(id);
+            if (scope == null) return NotFound();
+
+            await _scopeManager.DeleteAsync(scope);
+            _logger.LogInformation("{user} deleted scope {scope}", User.Identity.Name, id);
+
+            return RedirectToAction("Index");
+        }
+
         public async Task<IActionResult> AddClaimAsync(string scopeId, string claim)
         {
             var scope = await _scopeManager.FindByIdAsync(scopeId);

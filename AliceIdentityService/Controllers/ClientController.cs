@@ -70,8 +70,13 @@ namespace AliceIdentityService.Controllers
                 {
                     OpenIddictConstants.Permissions.GrantTypes.AuthorizationCode,
                     OpenIddictConstants.Permissions.GrantTypes.RefreshToken,
+                    OpenIddictConstants.Permissions.ResponseTypes.Code,
                     OpenIddictConstants.Permissions.Scopes.Profile,
                     OpenIddictConstants.Permissions.Scopes.Email
+                },
+                Requirements =
+                {
+                    OpenIddictConstants.Requirements.Features.ProofKeyForCodeExchange
                 },
                 ConsentType = OpenIddictConstants.ConsentTypes.Implicit
             };
@@ -114,6 +119,10 @@ namespace AliceIdentityService.Controllers
             await _applicationManager.PopulateAsync(descriptor, client);
 
             _mapper.Map(input, descriptor);
+            // It's not easy to map a bool to a readonly collection with Automapper so we just do it here.
+            if (input.IsPkce) descriptor.Requirements.Add(OpenIddictConstants.Requirements.Features.ProofKeyForCodeExchange);
+            else descriptor.Requirements.Remove(OpenIddictConstants.Requirements.Features.ProofKeyForCodeExchange);
+
             await _applicationManager.UpdateAsync(client, descriptor);
             _logger.LogInformation("{user} updated client {client}", User.Identity.Name, descriptor.ClientId);
 
@@ -193,5 +202,8 @@ namespace AliceIdentityService.Models
         public string PostLogoutRedirectUris { get; set; }
 
         public bool IsNewClientSecret { get; set; }
+
+        [Display(Name = "PKCE")]
+        public bool IsPkce { get; set; } = true;
     }
 }
