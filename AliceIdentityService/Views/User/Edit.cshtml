@@ -12,7 +12,7 @@
 
 <div class="row">
     <div class="col-lg-6">
-        <div class="card">
+        <div class="card h-100">
             <div class="card-header">Account</div>
             <div class="card-body">
                 <form method="post">
@@ -67,8 +67,8 @@
                             </div>
                         </div>
                         <div class="col-auto">
-                            <a class="btn btn-secondary me-2" asp-action="View" asp-route-id="@Model.Id">Cancel</a>
-                            <button type="submit" class="btn btn-primary">Save</button>
+                            <a class="btn btn-outline-secondary me-2" asp-action="View" asp-route-id="@Model.Id"><i class="bi bi-x-lg"></i></a>
+                            <button type="submit" class="btn btn-outline-primary"><i class="bi bi-check-lg"></i></button>
                         </div>
                     </div>
                 </form>
@@ -76,7 +76,7 @@
         </div>
     </div>
     <div class="col-lg-6">
-        <div class="card">
+        <div class="card h-100">
             <div class="card-header">Claims</div>
             <div class="card-body">
                 <form action="../AddClaim" method="post">
@@ -90,8 +90,8 @@
                                     <td>
                                         <a asp-action="RemoveClaim" asp-route-userId="@Model.Id"
                                        asp-route-claimType="@claim.Type" asp-route-claimValue="@claim.Value"
-                                       class="delete btn btn-danger btn-sm">
-                                            Remove
+                                       class="delete btn btn-outline-danger btn-sm">
+                                            <i class="bi bi-trash-fill"></i>
                                         </a>
                                     </td>
                                 </tr>
@@ -101,7 +101,7 @@
                                 <td><input name="claimValue" type="text" class="form-control" /></td>
                                 <td>
                                     <input type="hidden" name="userId" value="@Model.Id" />
-                                    <button class="btn btn-primary btn-sm">Add</button>
+                                    <button class="btn btn-outline-primary btn-sm"><i class="bi bi-plus-lg"></i></button>
                                 </td>
                             </tr>
                         </tbody>

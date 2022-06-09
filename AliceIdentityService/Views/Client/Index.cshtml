@@ -5,7 +5,7 @@
 <nav>
     <ol class="breadcrumb">
         <li class="breadcrumb-item active me-auto">Clients</li>
-        <li><a asp-action="Add" class="btn btn-primary btn-sm">Add</a></li>
+        <li><a asp-action="Add" class="btn btn-outline-primary btn-sm"><i class="bi bi-plus-lg"></i></a></li>
     </ol>
 </nav>
 
@@ -30,8 +30,8 @@
                     }
                 </td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@client.Id" class="btn btn-primary btn-sm">
-                        Edit
+                    <a asp-action="Edit" asp-route-id="@client.Id" class="btn btn-outline-primary btn-sm">
+                        <i class="bi bi-pencil-fill"></i>
                     </a>
                 </td>
             </tr>

@@ -7,13 +7,17 @@
         <li class="breadcrumb-item"><a asp-action="Index">Clients</a></li>
         <li class="breadcrumb-item"><a asp-action="View" asp-route-id="@ViewBag.Client.Id">@Model.DisplayName</a></li>
         <li class="breadcrumb-item active me-auto">Edit</li>
-        <li><a asp-action="Delete" asp-route-id="@ViewBag.Client.Id" class="btn btn-danger btn-sm">Delete</a></li>
+        <li>
+            <a asp-action="Delete" asp-route-id="@ViewBag.Client.Id" class="btn btn-outline-danger btn-sm">
+                <i class="bi bi-trash-fill"></i>
+            </a>
+        </li>
     </ol>
 </nav>
 
 <div class="row">
     <div class="col-lg-8">
-        <div class="card">
+        <div class="card h-100">
             <div class="card-header">Basic Info</div>
             <div class="card-body">
                 <form method="post">
@@ -48,15 +52,15 @@
                         <label asp-for="IsPkce" class="form-check-label"></label>
                     </div>
                     <input type="hidden" asp-for="IsNewClientSecret" />
-                    <a class="btn btn-secondary me-2" asp-action="View" asp-route-id="@ViewBag.Client.Id">Cancel</a>
-                    <button type="submit" class="btn btn-primary">Save</button>
+                    <a class="btn btn-outline-secondary me-2" asp-action="View" asp-route-id="@ViewBag.Client.Id"><i class="bi bi-x-lg"></i></a>
+                    <button type="submit" class="btn btn-outline-primary"><i class="bi bi-check-lg"></i></button>
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 </form>
             </div>
         </div>
     </div>
     <div class="col-lg-4">
-        <div class="card">
+        <div class="card h-100">
             <div class="card-header">Allowed Scopes</div>
             <div class="card-body">
                 <form action="../AddScope" method="post">
@@ -68,8 +72,8 @@
                                     <td>@scope</td>
                                     <td>
                                         <a asp-action="RemoveScope" asp-route-clientId="@ViewBag.Client.Id"
-                                       asp-route-scope="@scope" class="delete btn btn-danger btn-sm">
-                                            Remove
+                                       asp-route-scope="@scope" class="delete btn btn-outline-danger btn-sm">
+                                            <i class="bi bi-trash-fill"></i>
                                         </a>
                                     </td>
                                 </tr>
@@ -86,7 +90,7 @@
                                 </td>
                                 <td>
                                     <input type="hidden" name="clientId" value="@ViewBag.Client.Id" />
-                                    <button id="addScopeBtn" class="btn btn-primary btn-sm">Add</button>
+                                    <button id="addScopeBtn" class="btn btn-outline-primary btn-sm"><i class="bi bi-plus-lg"></i></button>
                                 </td>
                             </tr>
                         </tbody>

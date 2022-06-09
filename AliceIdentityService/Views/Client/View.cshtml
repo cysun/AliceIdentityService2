@@ -8,7 +8,11 @@
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a asp-action="Index">Clients</a></li>
         <li class="breadcrumb-item active me-auto">@Model.DisplayName</li>
-        <li><a asp-action="Edit" asp-route-id="@ViewBag.Client.Id" class="btn btn-primary btn-sm">Edit</a></li>
+        <li>
+            <a asp-action="Edit" asp-route-id="@ViewBag.Client.Id" class="btn btn-outline-primary btn-sm">
+                <i class="bi bi-pencil-fill"></i>
+            </a>
+        </li>
     </ol>
 </nav>
 
@@ -74,7 +78,7 @@
         </div>
     </div>
     <div class="col-lg-4">
-        <div class="card">
+        <div class="card h-100">
             <div class="card-header">Allowed Scopes</div>
             <div class="card-body">
                 <form action="../AddScope" method="post">
@@ -86,8 +90,8 @@
                                     <td>@scope</td>
                                     <td>
                                         <a asp-action="RemoveScope" asp-route-clientId="@ViewBag.Client.Id"
-                                       asp-route-scope="@scope" class="delete btn btn-danger btn-sm">
-                                            Remove
+                                       asp-route-scope="@scope" class="delete btn btn-outline-danger btn-sm">
+                                            <i class="bi bi-trash-fill"></i>
                                         </a>
                                     </td>
                                 </tr>
@@ -104,7 +108,7 @@
                                 </td>
                                 <td>
                                     <input type="hidden" name="clientId" value="@ViewBag.Client.Id" />
-                                    <button id="addScopeBtn" class="btn btn-primary btn-sm">Add</button>
+                                    <button id="addScopeBtn" class="btn btn-outline-primary btn-sm"><i class="bi bi-plus-lg"></i></button>
                                 </td>
                             </tr>
                         </tbody>

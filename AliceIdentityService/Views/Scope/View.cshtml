@@ -9,14 +9,18 @@
         <li class="breadcrumb-item active me-auto">@Model.Name</li>
         @if (IsNotStandardScope)
         {
-            <li><a asp-action="Edit" asp-route-id="@ViewBag.Scope.Id" class="btn btn-primary btn-sm">Edit</a></li>
+            <li>
+                <a asp-action="Edit" asp-route-id="@ViewBag.Scope.Id" class="btn btn-outline-primary btn-sm">
+                    <i class="bi bi-pencil-fill"></i>
+                </a>
+            </li>
         }
     </ol>
 </nav>
 
 <div class="row g-2">
     <div class="col-lg-4">
-        <div class="card">
+        <div class="card h-100">
             <div class="card-header">Basic Info</div>
             <div class="card-body">
                 <div class="form-floating mb-3">
@@ -35,7 +39,7 @@
         </div>
     </div>
     <div class="col-md-6 col-lg-4">
-        <div class="card">
+        <div class="card h-100">
             <div class="card-header">Associated Claims</div>
             <div class="card-body">
                 <form action="../AddClaim" method="post">
@@ -49,8 +53,8 @@
                                     {
                                         <td>
                                             <a asp-action="RemoveClaim" asp-route-scopeId="@ViewBag.Scope.Id"
-                                       asp-route-claim="@claim" class="delete btn btn-danger btn-sm">
-                                                Remove
+                                       asp-route-claim="@claim" class="delete btn btn-outline-danger btn-sm">
+                                                <i class="bi bi-trash-fill"></i>
                                             </a>
                                         </td>
                                     }
@@ -63,7 +67,7 @@
                                     <td><input name="claim" type="text" class="form-control" /></td>
                                     <td>
                                         <input type="hidden" name="scopeId" value="@ViewBag.Scope.Id" />
-                                        <button class="btn btn-primary btn-sm">Add</button>
+                                        <button class="btn btn-outline-primary btn-sm"><i class="bi bi-plus-lg"></i></button>
                                     </td>
                                 </tr>
                             }
@@ -76,7 +80,7 @@
     @if (IsNotStandardScope)
     {
         <div class="col-md-6 col-lg-4">
-            <div class="card">
+            <div class="card h-100">
                 <div class="card-header">Resources</div>
                 <div class="card-body">
                     <form action="../AddResource" method="post">
@@ -88,8 +92,8 @@
                                         <td>@resource</td>
                                         <td>
                                             <a asp-action="RemoveResource" asp-route-scopeId="@ViewBag.Scope.Id"
-                                       asp-route-resource="@resource" class="delete btn btn-danger btn-sm">
-                                                Remove
+                                       asp-route-resource="@resource" class="delete btn btn-outline-danger btn-sm">
+                                                <i class="bi bi-trash-fill"></i>
                                             </a>
                                         </td>
 
@@ -100,7 +104,7 @@
                                     <td><input name="resource" type="text" class="form-control" /></td>
                                     <td>
                                         <input type="hidden" name="scopeId" value="@ViewBag.Scope.Id" />
-                                        <button class="btn btn-primary btn-sm">Add</button>
+                                        <button class="btn btn-outline-primary btn-sm"><i class="bi bi-plus-lg"></i></button>
                                     </td>
                                 </tr>
                             </tbody>
