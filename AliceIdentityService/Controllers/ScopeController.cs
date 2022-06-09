@@ -39,9 +39,11 @@ namespace AliceIdentityService.Controllers
 
             var descriptor = new OpenIddictScopeDescriptor();
             await _scopeManager.PopulateAsync(descriptor, scope);
+
+            ViewBag.Scope = scope;
             ViewBag.Claims = descriptor.Properties["claims"].EnumerateArray().Select(e => e.GetString()).ToList();
 
-            return View(scope);
+            return View(descriptor);
         }
 
         [HttpGet]
@@ -70,6 +72,9 @@ namespace AliceIdentityService.Controllers
 
             var descriptor = new OpenIddictScopeDescriptor();
             await _scopeManager.PopulateAsync(descriptor, scope);
+
+            ViewBag.Scope = scope;
+            ViewBag.Descriptor = descriptor;
             ViewBag.Claims = descriptor.Properties["claims"].EnumerateArray().Select(e => e.GetString()).ToList();
 
             return View(_mapper.Map<ScopeInputModel>(scope));
@@ -140,6 +145,38 @@ namespace AliceIdentityService.Controllers
 
             return RedirectToAction("View", new { id = scopeId });
         }
+
+
+        public async Task<IActionResult> AddResourceAsync(string scopeId, string resource)
+        {
+            var scope = await _scopeManager.FindByIdAsync(scopeId);
+            if (scope == null) return NotFound();
+
+            var descriptor = new OpenIddictScopeDescriptor();
+            await _scopeManager.PopulateAsync(descriptor, scope);
+
+            descriptor.Resources.Add(resource);
+            await _scopeManager.UpdateAsync(scope, descriptor);
+            _logger.LogInformation("{user} added resource {resource} to {scope}", User.Identity.Name, resource, scope.Name);
+
+            return RedirectToAction("View", new { id = scopeId });
+        }
+
+        public async Task<IActionResult> RemoveResourceAsync(string scopeId, string resource)
+        {
+            var scope = await _scopeManager.FindByIdAsync(scopeId);
+            if (scope == null) return NotFound();
+
+            var descriptor = new OpenIddictScopeDescriptor();
+            await _scopeManager.PopulateAsync(descriptor, scope);
+
+            descriptor.Resources.Remove(resource);
+
+            await _scopeManager.UpdateAsync(scope, descriptor);
+            _logger.LogInformation("{user} removed resource {resource} from {scope}", User.Identity.Name, resource, scope.Name);
+
+            return RedirectToAction("View", new { id = scopeId });
+        }
     }
 }
 
@@ -147,8 +184,6 @@ namespace AliceIdentityService.Models
 {
     public class ScopeInputModel
     {
-        public string Id { get; set; }
-
         [Required, MaxLength(200)]
         public string Name { get; set; }
 

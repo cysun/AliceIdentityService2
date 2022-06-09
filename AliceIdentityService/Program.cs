@@ -70,6 +70,8 @@ services.AddOpenIddict()
             Path.Combine(configuration["Application:CertificateFolder"], "encryption-certificate.pfx")));
         options.AddSigningCertificate(new X509Certificate2(
             Path.Combine(configuration["Application:CertificateFolder"], "signing-certificate.pfx")));
+
+        // options.DisableAccessTokenEncryption(); // for testing
     })
     .AddValidation(options =>
     {

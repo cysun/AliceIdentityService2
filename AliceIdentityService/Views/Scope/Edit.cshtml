@@ -5,15 +5,15 @@
 <nav>
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a asp-action="Index">Scopes</a></li>
-        <li class="breadcrumb-item"><a asp-action="View" asp-route-id="@Model.Id">@Model.Name</a></li>
+        <li class="breadcrumb-item"><a asp-action="View" asp-route-id="@ViewBag.Scope.Id">@Model.Name</a></li>
         <li class="breadcrumb-item active me-auto">Edit</li>
-        <li><a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger btn-sm">Delete</a></li>
+        <li><a asp-action="Delete" asp-route-id="@ViewBag.Scope.Id" class="btn btn-danger btn-sm">Delete</a></li>
     </ol>
 </nav>
 
-<div class="row">
-    <div class="col-lg-8">
-        <div class="card">
+<div class="row g-2">
+    <div class="col-lg-4">
+        <div class="card h-100">
             <div class="card-header">Basic Info</div>
             <div class="card-body">
                 <form method="post">
@@ -29,15 +29,15 @@
                         <textarea asp-for="Description" class="form-control" placeholder="Description" style="height: 100px"></textarea>
                         <label asp-for="Description"></label>
                     </div>
-                    <a class="btn btn-secondary me-2" asp-action="View" asp-route-id="@Model.Id">Cancel</a>
+                    <a class="btn btn-secondary me-2" asp-action="View" asp-route-id="@ViewBag.Scope.Id">Cancel</a>
                     <button type="submit" class="btn btn-primary">Save</button>
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 </form>
             </div>
         </div>
     </div>
-    <div class="col-lg-4">
-        <div class="card">
+    <div class="col-md-6 col-lg-4">
+        <div class="card h-100">
             <div class="card-header">Associated Claims</div>
             <div class="card-body">
                 <form action="../AddClaim" method="post">
@@ -48,7 +48,7 @@
                                 <tr>
                                     <td>@claim</td>
                                     <td>
-                                        <a asp-action="RemoveClaim" asp-route-scopeId="@Model.Id" asp-route-claim="@claim"
+                                        <a asp-action="RemoveClaim" asp-route-scopeId="@ViewBag.Scope.Id" asp-route-claim="@claim"
                                        class="delete btn btn-danger btn-sm">
                                             Remove
                                         </a>
@@ -58,7 +58,41 @@
                             <tr>
                                 <td><input name="claim" type="text" class="form-control" /></td>
                                 <td>
-                                    <input type="hidden" name="scopeId" value="@Model.Id" />
+                                    <input type="hidden" name="scopeId" value="@ViewBag.Scope.Id" />
+                                    <button class="btn btn-primary btn-sm">Add</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-4">
+        <div class="card h-100">
+            <div class="card-header">Resources</div>
+            <div class="card-body">
+                <form action="../AddResource" method="post">
+                    <table class="table">
+                        <tbody>
+                            @foreach (var resource in ViewBag.Descriptor.Resources)
+                            {
+                                <tr>
+                                    <td>@resource</td>
+                                    <td>
+                                        <a asp-action="RemoveResource" asp-route-scopeId="@ViewBag.Scope.Id"
+                                       asp-route-resource="@resource" class="delete btn btn-danger btn-sm">
+                                            Remove
+                                        </a>
+                                    </td>
+
+
+                                </tr>
+                            }
+                            <tr>
+                                <td><input name="resource" type="text" class="form-control" /></td>
+                                <td>
+                                    <input type="hidden" name="scopeId" value="@ViewBag.Scope.Id" />
                                     <button class="btn btn-primary btn-sm">Add</button>
                                 </td>
                             </tr>

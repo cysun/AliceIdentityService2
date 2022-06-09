@@ -1,4 +1,4 @@
-@model OpenIddictEntityFrameworkCoreScope
+@model OpenIddictScopeDescriptor
 @{
     ViewData["Title"] = "View Scope";
     var IsNotStandardScope = !AisConstants.StandardScopes.Contains(Model.Name);
@@ -9,40 +9,32 @@
         <li class="breadcrumb-item active me-auto">@Model.Name</li>
         @if (IsNotStandardScope)
         {
-            <li><a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary btn-sm">Edit</a></li>
+            <li><a asp-action="Edit" asp-route-id="@ViewBag.Scope.Id" class="btn btn-primary btn-sm">Edit</a></li>
         }
     </ol>
 </nav>
 
-<div class="row">
-    <div class="col-lg-8">
+<div class="row g-2">
+    <div class="col-lg-4">
         <div class="card">
             <div class="card-header">Basic Info</div>
             <div class="card-body">
-                <div class="row">
-                    <div class="col-6">
-                        <div class="form-floating mb-3">
-                            <span class="form-control">@Model.Name</span>
-                            <label>Name</label>
-                        </div>
-                    </div>
-                    <div class="col-6">
-                        <div class="form-floating mb-3">
-                            <span class="form-control">@Model.DisplayName</span>
-                            <label>Display Name</label>
-                        </div>
-                    </div>
-                    <div class="col-12">
-                        <div class="form-floating mb-3">
-                            <div class="form-control" style="height: 100px">@Model.Description</div>
-                            <label>Description</label>
-                        </div>
-                    </div>
+                <div class="form-floating mb-3">
+                    <span class="form-control">@Model.Name</span>
+                    <label>Name</label>
+                </div>
+                <div class="form-floating mb-3">
+                    <span class="form-control">@Model.DisplayName</span>
+                    <label>Display Name</label>
+                </div>
+                <div class="form-floating mb-3">
+                    <div class="form-control" style="min-height: 100px">@Model.Description</div>
+                    <label>Description</label>
                 </div>
             </div>
         </div>
     </div>
-    <div class="col-lg-4">
+    <div class="col-md-6 col-lg-4">
         <div class="card">
             <div class="card-header">Associated Claims</div>
             <div class="card-body">
@@ -56,8 +48,8 @@
                                     @if (IsNotStandardScope)
                                     {
                                         <td>
-                                            <a asp-action="RemoveClaim" asp-route-scopeId="@Model.Id" asp-route-claim="@claim"
-                                       class="delete btn btn-danger btn-sm">
+                                            <a asp-action="RemoveClaim" asp-route-scopeId="@ViewBag.Scope.Id"
+                                       asp-route-claim="@claim" class="delete btn btn-danger btn-sm">
                                                 Remove
                                             </a>
                                         </td>
@@ -70,7 +62,7 @@
                                 <tr>
                                     <td><input name="claim" type="text" class="form-control" /></td>
                                     <td>
-                                        <input type="hidden" name="scopeId" value="@Model.Id" />
+                                        <input type="hidden" name="scopeId" value="@ViewBag.Scope.Id" />
                                         <button class="btn btn-primary btn-sm">Add</button>
                                     </td>
                                 </tr>
@@ -81,4 +73,41 @@
             </div>
         </div>
     </div>
+    @if (IsNotStandardScope)
+    {
+        <div class="col-md-6 col-lg-4">
+            <div class="card">
+                <div class="card-header">Resources</div>
+                <div class="card-body">
+                    <form action="../AddResource" method="post">
+                        <table class="table">
+                            <tbody>
+                                @foreach (var resource in Model.Resources)
+                                {
+                                    <tr>
+                                        <td>@resource</td>
+                                        <td>
+                                            <a asp-action="RemoveResource" asp-route-scopeId="@ViewBag.Scope.Id"
+                                       asp-route-resource="@resource" class="delete btn btn-danger btn-sm">
+                                                Remove
+                                            </a>
+                                        </td>
+
+
+                                    </tr>
+                                }
+                                <tr>
+                                    <td><input name="resource" type="text" class="form-control" /></td>
+                                    <td>
+                                        <input type="hidden" name="scopeId" value="@ViewBag.Scope.Id" />
+                                        <button class="btn btn-primary btn-sm">Add</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </form>
+                </div>
+            </div>
+        </div>
+    }
 </div>
