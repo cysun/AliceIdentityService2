@@ -71,7 +71,9 @@ services.AddOpenIddict()
         options.AddSigningCertificate(new X509Certificate2(
             Path.Combine(configuration["Application:CertificateFolder"], "signing-certificate.pfx")));
 
-        // options.DisableAccessTokenEncryption(); // for testing
+        // Use unencrypted access token as it's not possible to share the encryption key
+        // with all the APIs registered with AIS.
+        options.DisableAccessTokenEncryption();
     })
     .AddValidation(options =>
     {
