@@ -21,7 +21,7 @@
                 <td>@scope.DisplayName</td>
                 <td class="d-none d-lg-table-cell">@scope.Description</td>
                 <td>
-                    @if (!AisConstants.StandardScopes.Contains(scope.Name))
+                    @if (!AisConstants.StandardScopes.ContainsKey(scope.Name))
                     {
                         <a asp-action="Edit" asp-route-id="@scope.Id" class="btn btn-outline-primary btn-sm">
                             <i class="bi bi-pencil-fill"></i>

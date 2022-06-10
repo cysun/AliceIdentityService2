@@ -1,7 +1,7 @@
 @model OpenIddictScopeDescriptor
 @{
     ViewData["Title"] = "View Scope";
-    var IsNotStandardScope = !AisConstants.StandardScopes.Contains(Model.Name);
+    var IsNotStandardScope = !AisConstants.StandardScopes.ContainsKey(Model.Name);
 }
 <nav>
     <ol class="breadcrumb">

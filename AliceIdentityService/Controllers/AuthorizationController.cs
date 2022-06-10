@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using System.Text.Json;
 using AliceIdentityService.Helpers;
 using AliceIdentityService.Models;
 using Microsoft.AspNetCore;
@@ -8,6 +9,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
 using OpenIddict.Abstractions;
+using OpenIddict.Core;
+using OpenIddict.EntityFrameworkCore.Models;
 using OpenIddict.Server.AspNetCore;
 using static OpenIddict.Abstractions.OpenIddictConstants;
 
@@ -20,14 +23,14 @@ public class AuthorizationController : Controller
 {
     private readonly IOpenIddictApplicationManager _applicationManager;
     private readonly IOpenIddictAuthorizationManager _authorizationManager;
-    private readonly IOpenIddictScopeManager _scopeManager;
+    private readonly OpenIddictScopeManager<OpenIddictEntityFrameworkCoreScope> _scopeManager;
     private readonly SignInManager<User> _signInManager;
     private readonly UserManager<User> _userManager;
 
     public AuthorizationController(
         IOpenIddictApplicationManager applicationManager,
         IOpenIddictAuthorizationManager authorizationManager,
-        IOpenIddictScopeManager scopeManager,
+        OpenIddictScopeManager<OpenIddictEntityFrameworkCoreScope> scopeManager,
         SignInManager<User> signInManager,
         UserManager<User> userManager)
     {
@@ -155,10 +158,7 @@ public class AuthorizationController : Controller
 
                 principal.SetAuthorizationId(await _authorizationManager.GetIdAsync(authorization));
 
-                foreach (var claim in principal.Claims)
-                {
-                    claim.SetDestinations(GetDestinations(claim, principal));
-                }
+                await SetClaimDestinationsAsync(principal);
 
                 return SignIn(principal, OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
 
@@ -246,10 +246,7 @@ public class AuthorizationController : Controller
 
         principal.SetAuthorizationId(await _authorizationManager.GetIdAsync(authorization));
 
-        foreach (var claim in principal.Claims)
-        {
-            claim.SetDestinations(GetDestinations(claim, principal));
-        }
+        await SetClaimDestinationsAsync(principal);
 
         // Returning a SignInResult will ask OpenIddict to issue the appropriate access/identity tokens.
         return SignIn(principal, OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
@@ -320,16 +317,69 @@ public class AuthorizationController : Controller
                     }));
             }
 
-            foreach (var claim in principal.Claims)
-            {
-                claim.SetDestinations(GetDestinations(claim, principal));
-            }
+            await SetClaimDestinationsAsync(principal);
 
             // Returning a SignInResult will ask OpenIddict to issue the appropriate access/identity tokens.
             return SignIn(principal, OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
         }
 
         throw new InvalidOperationException("The specified grant type is not supported.");
+    }
+
+    private async Task SetClaimDestinationsAsync(ClaimsPrincipal principal)
+    {
+        var idTokenClaims = new HashSet<string>();
+        var accessTokenClaims = new HashSet<string>();
+        foreach (var scopeName in principal.GetScopes())
+        {
+            if (AisConstants.StandardScopes.ContainsKey(scopeName))
+            {
+                // openid claims like sub, iss, aud etc. are automatically added by OpenIddict
+                if (scopeName == "openid") continue;
+
+                idTokenClaims.UnionWith(AisConstants.StandardScopes[scopeName]);
+                switch (scopeName)
+                {
+                    case "email":
+                        accessTokenClaims.UnionWith(AisConstants.StandardScopes[scopeName]);
+                        break;
+                    case "profile":
+                        accessTokenClaims.Add("name");
+                        break;
+                }
+            }
+            else
+            {
+                var scope = await _scopeManager.FindByNameAsync(scopeName);
+                if (scope != null)
+                {
+                    using var document = JsonDocument.Parse(scope.Properties);
+                    foreach (var property in document.RootElement.EnumerateObject())
+                    {
+                        if (property.Name == "claims")
+                        {
+                            var claims = property.Value.EnumerateArray().Select(e => e.GetString()).ToHashSet();
+                            idTokenClaims.UnionWith(claims);
+                            accessTokenClaims.UnionWith(claims);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        foreach (var claim in principal.Claims)
+        {
+            if (idTokenClaims.Contains(claim.Type))
+            {
+                if (accessTokenClaims.Contains(claim.Type))
+                    claim.SetDestinations(new string[] { Destinations.IdentityToken, Destinations.AccessToken });
+                else
+                    claim.SetDestinations(new string[] { Destinations.IdentityToken });
+            }
+            else if (idTokenClaims.Contains(claim.Type))
+                claim.SetDestinations(new string[] { Destinations.AccessToken });
+        }
     }
 
     private IEnumerable<string> GetDestinations(Claim claim, ClaimsPrincipal principal)
