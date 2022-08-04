@@ -1,10 +1,11 @@
 # Alice Identity Service (AIS)
 
-[Alice Identity Service (AIS)](https://identity.cysun.org/) is an OpenID Connect (OIDC) identity provider.
-Based on [OpenIddict](https://documentation.openiddict.com/) and
+[Alice Identity Service (AIS)](https://identity.cysun.org/) is an
+[OpenID Connect (OIDC)](https://openid.net/connect/) identity provider.
+Based on [OpenIddict](https://github.com/openiddict/openiddict-core) and
 [ASP.NET Core Identity](https://docs.microsoft.com/en-us/aspnet/core/security/authentication/identity),
-AIS can provide single sign-on (SSO) for various applications with a web UI to manage users, claims, scopes,
-and clients.
+AIS provides the capabilities to manage users, claims, scopes, and clients, and serves as a single
+sign-on (SSO) service for other applications and APIs.
 
 ## Installation
 
@@ -23,9 +24,17 @@ and clients.
 AIS only supports Authorization Code and Refresh Token grants and the `code` response type. Client Credentials will be
 added when necessary.
 
-All clients use `implicit` consent type, which means the consent screen is never shown and a user cannot pick and choose
-which requested scopes should be granted to a client. This is sufficent for now as AIS is mainly used for SSO.
+All clients use `implicit` consent type, which means that the consent screen is never shown and a user cannot pick and
+choose which requested scopes should be granted to a client. Note that this does *not* mean a client can request any
+scope it wants - each client is still limited to its "allowed scopes" configured in the system.
 
-## Screenshot
+## Screenshots
 
+### Edit Client
 ![Screenshot of Edit Client UI](https://mynotes.cysun.org/files/view/1001488)
+
+### Edit Scope
+![Screenshot of Edit Scope UI](https://mynotes.cysun.org/files/view/1001486)
+
+### Edit User
+![Screenshot of Edit User UI](https://mynotes.cysun.org/files/view/1001570)

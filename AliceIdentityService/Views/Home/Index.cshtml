@@ -1,9 +1,11 @@
 <div class="p-5 bg-light rounded-3">
     <div>
         <p class="fs-5">
-            Alice Identity Service is part of the
-            <a href="https://csns.cysun.org/wiki/content/cysun/alice/">Alice Project</a>.
-            It handles user management and Single Sign-On (SSO) for the other services.
+            Alice Identity Service (AIS) is an <a href="https://openid.net/connect/">OpenID Connect (OIDC)</a> identity provider.
+            Based on <a href="https://github.com/openiddict/openiddict-core">OpenIddict</a> and
+            <a href="https://docs.microsoft.com/en-us/aspnet/core/security/authentication/identity">ASP.NET Core Identity</a>,
+            AIS provides the capabilities to manage users, claims, scopes, and clients, and serves as a single sign-On (SSO)
+            service for other applications and APIs.
         </p>
         @if (User.Identity.IsAuthenticated)
         {
@@ -12,7 +14,7 @@
         else
         {
             <a class="btn btn-primary btn-lg me-3" role="button" asp-controller="Account" asp-action="Login">Login</a>
-            <a class="btn btn-primary btn-lg role="button" asp-controller="Account" asp-action="Register">Register</a>
+            <a class="btn btn-primary btn-lg" role="button" asp-controller="Account" asp-action="Register">Register</a>
         }
     </div>
 </div>
