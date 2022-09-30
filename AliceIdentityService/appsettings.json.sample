@@ -9,7 +9,11 @@
     "AppUrl": "https://localhost:5001",
     "SenderName": "Alice Identity Service",
     "SenderEmail": "ais@localhost.localdomain",
-    "SendGridKey": "abcXYZ"
+    "Host": "localhost",
+    "Port": 25,
+    "RequireAuthentication": true,
+    "Username": "cysun@localhost.localdomain",
+    "Password": "abcd"
   },
   "Serilog": {
     "Using": [

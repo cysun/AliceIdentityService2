@@ -1,6 +1,5 @@
 using AliceIdentityService.Models;
 using FluentEmail.Core;
-using Microsoft.Extensions.Options;
 
 namespace AliceIdentityService.Services;
 
@@ -9,7 +8,11 @@ public class EmailSettings
     public string AppUrl { get; set; }
     public string SenderName { get; set; }
     public string SenderEmail { get; set; }
-    public string SendGridKey { get; set; }
+    public string Host { get; set; }
+    public int Port { get; set; }
+    public bool RequireAuthentication { get; set; }
+    public string Username { get; set; }
+    public string Password { get; set; }
 }
 
 public class EmailSender
@@ -20,11 +23,10 @@ public class EmailSender
 
     private ILogger<EmailSender> _logger;
 
-    public EmailSender(IWebHostEnvironment env, IOptions<EmailSettings> settings,
-        IFluentEmail email, ILogger<EmailSender> logger)
+    public EmailSender(IWebHostEnvironment env, EmailSettings settings, IFluentEmail email, ILogger<EmailSender> logger)
     {
         _templateFolder = $"{env.ContentRootPath}/EmailTemplates";
-        _settings = settings.Value;
+        _settings = settings;
         _email = email;
         _logger = logger;
     }
@@ -32,7 +34,6 @@ public class EmailSender
     public async void SendEmailVerificationMessageAsync(User user, string link)
     {
         var email = _email
-             .Tag("AIS") // See https://github.com/lukencode/FluentEmail/issues/317
              .Subject("AIS - Email Verification")
              .To(user.Email, user.FullName)
              .UsingTemplateFromFile($"{_templateFolder}/EmailVerification.Body.txt",

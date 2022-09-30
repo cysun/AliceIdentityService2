@@ -118,10 +118,19 @@ services.AddAuthorization(options =>
         policy.RequireClaim(AisConstants.AdminClaim));
 });
 
-services.AddFluentEmail(configuration["Email:SenderEmail"], configuration["Email:SenderName"])
-    .AddSendGridSender(configuration["Email:SendGridKey"])
+var emailSettings = configuration.GetSection("Email").Get<EmailSettings>();
+services.AddFluentEmail(emailSettings.SenderEmail, emailSettings.SenderName)
+    .AddMailKitSender(new FluentEmail.MailKitSmtp.SmtpClientOptions
+    {
+        Server = emailSettings.Host,
+        Port = emailSettings.Port,
+        User = emailSettings.Username,
+        Password = emailSettings.Password,
+        RequiresAuthentication = emailSettings.RequireAuthentication
+    })
     .AddLiquidRenderer();
-services.Configure<EmailSettings>(configuration.GetSection("Email"));
+
+services.AddSingleton(emailSettings);
 services.AddScoped<EmailSender>();
 
 services.AddAutoMapper(config => config.AddProfile<MapperProfile>());
