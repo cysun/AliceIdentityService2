@@ -7,8 +7,7 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
-    <PackageReference Include="FluentEmail.Liquid" Version="3.0.2" />
-    <PackageReference Include="FluentEmail.MailKit" Version="3.0.2" />
+    <PackageReference Include="MailKit" Version="3.4.1" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.9" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.9">
       <PrivateAssets>all</PrivateAssets>
@@ -19,6 +18,7 @@
     <PackageReference Include="OpenIddict.EntityFrameworkCore" Version="3.1.1" />
     <PackageReference Include="OpenIddict.Quartz" Version="3.1.1" />
     <PackageReference Include="Quartz.Extensions.Hosting" Version="3.5.0" />
+    <PackageReference Include="Scriban" Version="5.5.0" />
     <PackageReference Include="Serilog.AspNetCore" Version="6.0.1" />
     <PackageReference Include="System.Linq.Async" Version="6.0.1" />
   </ItemGroup>

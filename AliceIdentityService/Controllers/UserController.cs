@@ -119,7 +119,7 @@ namespace AliceIdentityService.Controllers
         public async Task<IActionResult> AddClaimAsync(string userId, string claimType, string claimValue)
         {
             var user = _userService.GetUser(userId);
-            var result = await _userManager.AddClaimAsync(user, new Claim(claimType, claimValue));
+            var result = await _userManager.AddClaimAsync(user, new Claim(claimType?.Trim(), claimValue?.Trim()));
             if (result.Succeeded)
             {
                 _logger.LogError("{user} added claim {claimType}={claimValue} to {account}",
