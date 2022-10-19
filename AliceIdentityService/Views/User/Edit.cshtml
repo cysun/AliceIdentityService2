@@ -1,3 +1,4 @@
+@using static OpenIddict.Abstractions.OpenIddictConstants
 @model EditUserInputModel
 @{
     ViewData["Title"] = "Edit User";
@@ -6,7 +7,11 @@
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a asp-action="Index">Users</a></li>
         <li class="breadcrumb-item"><a asp-action="View" asp-route-id="@Model.Id">@Model.FullName</a></li>
-        <li class="breadcrumb-item active">Edit</li>
+        <li class="breadcrumb-item active me-auto">Edit</li>
+        @if (User.FindFirst(Claims.Subject).Value != Model.Id)
+        {
+            <li><button id="delete" class="btn btn-outline-danger btn-sm"><i class="bi bi-trash-fill"></i></button></li>
+        }
     </ol>
 </nav>
 
@@ -97,8 +102,8 @@
                                 </tr>
                             }
                             <tr>
-                                <td><input name="claimType" type="text" class="form-control" /></td>
-                                <td><input name="claimValue" type="text" class="form-control" /></td>
+                                <td><input name="claimType" type="text" class="form-control" required /></td>
+                                <td><input name="claimValue" type="text" class="form-control" required /></td>
                                 <td>
                                     <input type="hidden" name="userId" value="@Model.Id" />
                                     <button class="btn btn-outline-primary btn-sm"><i class="bi bi-plus-lg"></i></button>
@@ -111,3 +116,15 @@
         </div>
     </div>
 </div>
+
+@section Scripts{
+    <script>
+        $(function () {
+            $("#delete").click(function () {
+                if (confirm("Are you sure you want to delete this user?")) {
+                    window.location.href = "../Delete/@Model.Id";
+                }
+            });
+        });
+    </script>
+}

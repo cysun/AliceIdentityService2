@@ -6,6 +6,9 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using OpenIddict.Core;
+using OpenIddict.EntityFrameworkCore.Models;
+using static OpenIddict.Abstractions.OpenIddictConstants;
 
 namespace AliceIdentityService.Controllers
 {
@@ -14,15 +17,18 @@ namespace AliceIdentityService.Controllers
     {
         private readonly UserService _userService;
         private readonly UserManager<User> _userManager;
+        private readonly OpenIddictTokenManager<OpenIddictEntityFrameworkCoreToken> _tokenManager;
 
         private readonly IMapper _mapper;
         private readonly ILogger<UserController> _logger;
 
-        public UserController(UserService userService, UserManager<User> userManager, IMapper mapper,
-            ILogger<UserController> logger)
+        public UserController(UserService userService, UserManager<User> userManager,
+            OpenIddictTokenManager<OpenIddictEntityFrameworkCoreToken> tokenManager,
+            IMapper mapper, ILogger<UserController> logger)
         {
             _userService = userService;
             _userManager = userManager;
+            _tokenManager = tokenManager;
             _mapper = mapper;
             _logger = logger;
         }
@@ -114,6 +120,34 @@ namespace AliceIdentityService.Controllers
             _logger.LogInformation("{user} edited account {account}", User.Identity.Name, input.Email);
 
             return RedirectToAction("View", new { id = user.Id });
+        }
+
+        public async Task<IActionResult> DeleteAsync(string id)
+        {
+            if (User.FindFirstValue(Claims.Subject) == id)
+            {
+                return View("Error", new ErrorViewModel
+                {
+                    Message = "Cannot delete the current user."
+                });
+            }
+
+            await foreach (var token in _tokenManager.FindBySubjectAsync(id))
+            {
+                if (!await _tokenManager.TryRevokeAsync(token))
+                    _logger.LogWarning("Failed to revoke {token}", token.Id);
+            }
+
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null) return NotFound();
+
+            var result = await _userManager.DeleteAsync(user);
+            if (result.Succeeded)
+                _logger.LogInformation("{user} deleted account {account}", User.Identity.Name, id);
+            else
+                _logger.LogWarning("Failed to delete account {account}", id);
+
+            return RedirectToAction("Index");
         }
 
         public async Task<IActionResult> AddClaimAsync(string userId, string claimType, string claimValue)

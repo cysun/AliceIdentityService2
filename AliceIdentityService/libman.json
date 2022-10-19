@@ -3,7 +3,7 @@
   "defaultProvider": "cdnjs",
   "libraries": [
     {
-      "library": "bootstrap@5.2.0",
+      "library": "bootstrap@5.2.2",
       "destination": "wwwroot/lib/bootstrap/",
       "files": [
         "js/bootstrap.bundle.min.js",
@@ -11,7 +11,7 @@
       ]
     },
     {
-      "library": "bootswatch@5.2.0",
+      "library": "bootswatch@5.2.2",
       "destination": "wwwroot/lib/bootswatch/",
       "files": [
         "cerulean/bootstrap.min.css",
@@ -20,7 +20,7 @@
     },
     {
       "provider": "cdnjs",
-      "library": "jquery@3.6.0",
+      "library": "jquery@3.6.1",
       "destination": "wwwroot/lib/jquery/",
       "files": [
         "jquery.min.js"
