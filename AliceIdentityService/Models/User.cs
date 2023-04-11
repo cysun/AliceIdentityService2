@@ -14,5 +14,7 @@ public class User : IdentityUser
     [Required, MaxLength(255)]
     public string ScreenName { get; set; }
 
+    public DateTime CreationTime { get; set; } = DateTime.UtcNow;
+
     public string FullName => $"{FirstName} {LastName}";
 }

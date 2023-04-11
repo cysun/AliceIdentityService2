@@ -1,4 +1,5 @@
-@model List<User>
+@using static AliceIdentityService.Services.UserService;
+@model Dictionary<CountType, int>
 @{
     ViewData["Title"] = "Users";
 }
@@ -9,31 +10,54 @@
     </ol>
 </nav>
 
-<table class="table table-hover">
-    <thead>
-        <tr><th>Name</th><th class="d-none d-md-table-cell">Email</th><th></th></tr>
-    </thead>
-    <tbody>
-        @foreach (var user in Model)
-        {
-            <tr>
-                <td><a asp-action="View" asp-route-id="@user.Id">@user.FullName</a></td>
-                <td class="d-none d-md-table-cell">
-                    @if (user.EmailConfirmed)
-                    {
-                        <a href="mailto:@user.Email">@user.Email</a>
-                    }
-                    else
-                    {
-                        @user.Email
-                    }
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@user.Id" class="btn btn-outline-primary btn-sm">
-                        <i class="bi bi-pencil-fill"></i>
-                    </a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+<form method="get" class="d-inline-flex mb-3">
+    <input id="search" name="searchText" class="form-control me-2">
+    <button class="btn btn-outline-primary" type="submit"><i class="bi bi-search"></i></button>
+</form>
+
+<div class="row g-3">
+    <div class="col-sm-4">
+        <div class="card">
+            <div class="card-header text-center">Total</div>
+            <div class="card-body text-center display-6">@Model[CountType.Total]</div>
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div class="card">
+            <div class="card-header text-center">Recent</div>
+            <div class="card-body text-center display-6 text-success">
+                <a asp-action="Recent" class="link-success stretched-link text-decoration-none">@Model[CountType.Recent]</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div class="card">
+            <div class="card-header text-center">Unconfirmed</div>
+            <div class="card-body text-center display-6">
+                <a asp-action="Unconfirmed" class="link-warning stretched-link text-decoration-none">@Model[CountType.Unconfirmed]</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="~/js/autocomplete.js" asp-append-version="true"></script>
+    <script>
+        $(function () {
+            const field = document.getElementById("search");
+            const ac = new Autocomplete(field, {
+                onInput: function () {
+                    $.ajax({
+                        url: "User/Autocomplete",
+                        data: { searchText: $("#search").val() },
+                        success: results => ac.setData(results.map(r =>
+                            ({ label: r.fullName, value: r.id })))
+                    })
+                },
+                onSelectItem: ({ label, value }) => {
+                    window.location.href = `User/View/${value}`;
+                }
+            });
+        });
+    </script>
+}

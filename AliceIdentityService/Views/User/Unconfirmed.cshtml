@@ -1,0 +1,39 @@
+@model List<User>
+@{
+    ViewData["Title"] = "Unconfirmed Users";
+}
+<nav>
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-action="Index">Users</a></li>
+        <li class="breadcrumb-item active">Unconfirmed</li>
+    </ol>
+</nav>
+
+<table class="table table-hover">
+    <thead>
+        <tr><th>Name</th><th class="d-none d-md-table-cell">Email</th><th></th></tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td><a asp-action="View" asp-route-id="@user.Id">@user.FullName</a></td>
+                <td class="d-none d-md-table-cell">
+                    @if (user.EmailConfirmed)
+                    {
+                        <a href="mailto:@user.Email">@user.Email</a>
+                    }
+                    else
+                    {
+                        @user.Email
+                    }
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@user.Id" class="btn btn-outline-primary btn-sm">
+                        <i class="bi bi-pencil-fill"></i>
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

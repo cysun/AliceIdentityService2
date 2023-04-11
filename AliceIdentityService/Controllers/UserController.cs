@@ -35,7 +35,22 @@ namespace AliceIdentityService.Controllers
 
         public IActionResult Index()
         {
-            return View(_userService.GetUsers());
+            return View(_userService.GetCounts());
+        }
+
+        public IActionResult Recent()
+        {
+            return View(_userService.GetRecentUsers());
+        }
+
+        public IActionResult Unconfirmed()
+        {
+            return View(_userService.GetUnconfirmedUsers());
+        }
+
+        public List<User> Autocomplete(string searchText)
+        {
+            return _userService.SearchUsersByPrefix(searchText, 10);
         }
 
         public async Task<IActionResult> ViewAsync(string id)

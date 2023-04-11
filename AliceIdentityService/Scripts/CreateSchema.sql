@@ -19,6 +19,7 @@ CREATE TABLE "AspNetUsers" (
     "FirstName" character varying(255) NOT NULL,
     "LastName" character varying(255) NOT NULL,
     "ScreenName" character varying(255) NOT NULL,
+    "CreationTime" timestamp with time zone NOT NULL,
     "UserName" character varying(256) NULL,
     "NormalizedUserName" character varying(256) NULL,
     "Email" character varying(256) NULL,
@@ -170,7 +171,7 @@ CREATE INDEX "IX_OpenIddictTokens_AuthorizationId" ON "OpenIddictTokens" ("Autho
 CREATE UNIQUE INDEX "IX_OpenIddictTokens_ReferenceId" ON "OpenIddictTokens" ("ReferenceId");
 
 INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-VALUES ('20220507035339_IntialSchema', '6.0.4');
+VALUES ('20230411061514_InitialSchema', '7.0.4');
 
 COMMIT;
 
