@@ -368,6 +368,9 @@ public class AuthorizationController : Controller
             }
         }
 
+        // According to https://documentation.openiddict.com/guides/migration/30-to-40.html, we are encouraged
+        // to use principal.SetDEstinations(), though I don't quite see the difference between that and a
+        // for loop like what we have here.
         foreach (var claim in principal.Claims)
         {
             if (idTokenClaims.Contains(claim.Type))

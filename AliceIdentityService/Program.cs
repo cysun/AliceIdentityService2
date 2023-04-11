@@ -51,10 +51,10 @@ services.AddOpenIddict()
         options.AllowAuthorizationCodeFlow()
                .AllowRefreshTokenFlow();
 
-        options.SetAuthorizationEndpointUris("/connect/authorize")
-               .SetTokenEndpointUris("/connect/token")
-               .SetUserinfoEndpointUris("/connect/userinfo")
-               .SetLogoutEndpointUris("/connect/logout");
+        options.SetAuthorizationEndpointUris("connect/authorize")
+               .SetTokenEndpointUris("connect/token")
+               .SetUserinfoEndpointUris("connect/userinfo")
+               .SetLogoutEndpointUris("connect/logout");
 
         // Don't EnableUserinfoEndpointPassthrough() because it requires access token.
         options.UseAspNetCore()
