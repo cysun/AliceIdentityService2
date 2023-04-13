@@ -86,12 +86,8 @@ namespace AliceIdentityService.Controllers
 
                 var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                 code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                var link = Url.Action("ConfirmEmail", "Account", new
-                {
-                    userId = user.Id,
-                    code = code
-                });
-                _emailSender.SendEmailVerificationMessageAsync(user, link);
+                var link = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code });
+                await _emailSender.SendEmailVerificationMessageAsync(user, link);
 
                 return View("Status", new StatusViewModel
                 {
@@ -122,16 +118,97 @@ namespace AliceIdentityService.Controllers
             var result = await _userManager.ConfirmEmailAsync(user, code);
 
             if (result.Succeeded)
+            {
+                _logger.LogInformation("Email confirmatin successful for {userId}", userId);
                 return View("Status", new StatusViewModel
                 {
                     Subject = "Email Confirmed",
                     Message = "Thank you for confirming your email. Your account is now activated."
                 });
+            }
             else
+            {
+                _logger.LogError("Email confirmation failed for {userId}", userId);
                 return View("Error", new ErrorViewModel
                 {
                     Message = "Sorry we cannot verify your email."
                 });
+            }
+        }
+
+        [HttpGet]
+        public IActionResult ForgotPassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ForgotPasswordAsync(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user != null && await _userManager.IsEmailConfirmedAsync(user))
+            {
+                var code = await _userManager.GeneratePasswordResetTokenAsync(user);
+                code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+                var link = Url.Action("ResetPassword", "Account", new { code });
+                await _emailSender.SendResetPasswordMessageAsync(email, link);
+            }
+
+            // Don't reveal that the user does not exist or is not confirmed
+            return View("Status", new StatusViewModel
+            {
+                Subject = "Reset Password",
+                Message = @"An email is sent to you with instructions on how to reset your password. If you don't
+                        get the email after a couple of minutes, please check your spam folder."
+            });
+        }
+
+        [HttpGet]
+        public IActionResult ResetPassword(string code)
+        {
+            if (code == null)
+                return View("Error", new ErrorViewModel
+                {
+                    Message = "A code must be supplied for password reset."
+                });
+
+            return View(new ResetPasswordInputModel
+            {
+                Code = code
+            });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ResetPasswordAsync(ResetPasswordInputModel input)
+        {
+            if (!ModelState.IsValid) return View(input);
+
+            var statusViewModel = new StatusViewModel
+            {
+                Subject = "Reset Password",
+                Message = "Your password has been reset."
+            };
+
+            var user = await _userManager.FindByEmailAsync(input.Email);
+
+            // Don't reveal that the user does not exist
+            if (user == null) return View("Status", statusViewModel);
+
+            var result = await _userManager.ResetPasswordAsync(user,
+                Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(input.Code)), input.Password);
+            if (result.Succeeded)
+            {
+                _logger.LogInformation("Password reset successful for {email}", input.Email);
+                return View("Status", statusViewModel);
+            }
+            else
+            {
+                _logger.LogError("Password reset failed for {email}. {result}", input.Email, result);
+                return View("Error", new ErrorViewModel
+                {
+                    Message = "Sorry we cannot reset your password."
+                });
+            }
         }
 
         public IActionResult AccessDenied()
@@ -178,5 +255,21 @@ namespace AliceIdentityService.Models
         [Required, DataType(DataType.Password), Display(Name = "Confirm Password")]
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
+    }
+
+    public class ResetPasswordInputModel
+    {
+        [Required, EmailAddress]
+        public string Email { get; set; }
+
+        [Required, DataType(DataType.Password), Display(Name = "New Password")]
+        public string Password { get; set; }
+
+        [Required, DataType(DataType.Password), Display(Name = "Confirm Password")]
+        [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+        public string ConfirmPassword { get; set; }
+
+        [Required]
+        public string Code { get; set; }
     }
 }

@@ -1,4 +1,4 @@
-﻿@model LoginInputModel
+@model LoginInputModel
 @{
     ViewData["Title"] = "Login";
 }
@@ -24,7 +24,7 @@
                     <label asp-for="RememberMe" class="form-check-label"></label>
                 </div>
                 <div>
-                    <a href="#" class="float-right">Forgot Password?</a>
+                    <a asp-action="ForgotPassword" class="float-right">Forgot Password?</a>
                 </div>
             </div>
         </form>

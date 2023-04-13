@@ -67,7 +67,7 @@
     </main>
 
     <footer class="text-center">
-        <div class="my-2">Copyright &copy; Chengyu Sun 2022.</div>
+        <div class="my-2">Copyright &copy; Chengyu Sun 2022-2023.</div>
         <div>
             <a href="https://www.flaticon.com/free-icon/fingerprint_2313448" title="Fingerprint Icon">Fingerprint icon</a>
             created by <a href="https://www.flaticon.com/authors/pixel-perfect">Pixel perfect</a> -
@@ -75,10 +75,7 @@
         </div>
     </footer>
     <script src="~/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
-    @if ((await AuthorizationService.AuthorizeAsync(User, AisConstants.Policy.IsAdmin)).Succeeded)
-    {
-        <script src="~/lib/jquery/jquery.min.js"></script>
-    }
+    <script src="~/lib/jquery/jquery.min.js"></script>
     @RenderSection("scripts", required: false)
 </body>
 </html>

@@ -9,15 +9,17 @@ sign-on (SSO) service for other applications and APIs.
 
 ## Installation
 
-1. Create a PostgreSQL database and use `AliceIdentityService/Scripts/CreateSchema.sql` to create the tables.
-  AIS uses Entity Framework Core so it is possible to use other DBMS like MySQL or MS SQL Server, though it'll
-  need some minor changes (use different package, connection string, and extension method).
-2. Copy `AliceIdentityService/appsettings.json.sample` to `AliceIdentityService/appsettings.json`, and change
+1. Create an empty PostgreSQL database. AIS uses Entity Framework Core so it is possible to use other DBMS like MySQL
+  or MS SQL Server, though it'll need some changes to the code.
+2. Populate the database using the following SQL scripts in the `AliceIdentityService/Scripts` folder:
+  * `CreateSchema.sql` - create all the tables.
+  * `PopulateSchema.sql` - create additional indexes, stored procedures, and so on.
+3. Copy `AliceIdentityService/appsettings.json.sample` to `AliceIdentityService/appsettings.json`, and change
   `appsettings.json` according to your environment.
-3. Run `ConsoleManager`
+4. Run `ConsoleManager`
   * Generate an encryption certificate and a signing certificate.
   * Create a user with the `ais-admin` claim. This user is the administrator who can manage users, scopes, and clients.
-4. Run `AliceIdentityService`.
+5. Run `AliceIdentityService`.
 
 ## Current Limitations
 

@@ -33,7 +33,7 @@ public class EmailSender
         _logger = logger;
     }
 
-    public async void SendEmailVerificationMessageAsync(User user, string link)
+    public async Task SendEmailVerificationMessageAsync(User user, string link)
     {
         var msg = new MimeMessage();
         msg.From.Add(new MailboxAddress(_settings.SenderName, _settings.SenderEmail));
@@ -41,6 +41,22 @@ public class EmailSender
         msg.Subject = "AIS - Email Verification";
 
         var template = Template.Parse(File.ReadAllText($"{_templateFolder}/EmailVerification.Body.txt"));
+        msg.Body = new TextPart("html")
+        {
+            Text = template.Render(new { link = $"{_settings.AppUrl}{link}" })
+        };
+
+        await SendAsync(msg);
+    }
+
+    public async Task SendResetPasswordMessageAsync(string email, string link)
+    {
+        var msg = new MimeMessage();
+        msg.From.Add(new MailboxAddress(_settings.SenderName, _settings.SenderEmail));
+        msg.To.Add(new MailboxAddress(email, email));
+        msg.Subject = "AIS - Reset Password";
+
+        var template = Template.Parse(File.ReadAllText($"{_templateFolder}/ResetPassword.Body.txt"));
         msg.Body = new TextPart("html")
         {
             Text = template.Render(new { link = $"{_settings.AppUrl}{link}" })
