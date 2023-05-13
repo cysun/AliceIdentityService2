@@ -32,7 +32,7 @@
                 <label asp-for="ConfirmPassword"></label>
             </div>
             <div class="mb-3 d-grid">
-                <button type="submit" class="btn btn-primary">Register</button>
+                <button id="submit" type="submit" class="btn btn-primary">Register</button>
             </div>
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         </form>
@@ -43,7 +43,7 @@
     <script>
         $(function () {
             $("form").submit(function () {
-                $("button").prop("disabled", true);
+                $("#submit").prop("disabled", true).html("<span class='spinner-border spinner-border-sm'></span>");
             });
         });
     </script>

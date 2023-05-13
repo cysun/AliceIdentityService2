@@ -33,7 +33,7 @@ public class EmailSender
         _logger = logger;
     }
 
-    public async Task SendEmailVerificationMessageAsync(User user, string link)
+    public bool SendEmailVerificationMessage(User user, string link)
     {
         var msg = new MimeMessage();
         msg.From.Add(new MailboxAddress(_settings.SenderName, _settings.SenderEmail));
@@ -46,10 +46,10 @@ public class EmailSender
             Text = template.Render(new { link = $"{_settings.AppUrl}{link}" })
         };
 
-        await SendAsync(msg);
+        return Send(msg);
     }
 
-    public async Task SendResetPasswordMessageAsync(string email, string link)
+    public bool SendResetPasswordMessage(string email, string link)
     {
         var msg = new MimeMessage();
         msg.From.Add(new MailboxAddress(_settings.SenderName, _settings.SenderEmail));
@@ -62,27 +62,32 @@ public class EmailSender
             Text = template.Render(new { link = $"{_settings.AppUrl}{link}" })
         };
 
-        await SendAsync(msg);
+        return Send(msg);
     }
 
-    public async Task SendAsync(MimeMessage message)
+    public bool Send(MimeMessage message)
     {
+        var success = true;
         using var client = new SmtpClient();
 
         try
         {
             client.ServerCertificateValidationCallback = (s, c, h, e) => true;
-            await client.ConnectAsync(_settings.Host, _settings.Port, SecureSocketOptions.None);
+            client.Connect(_settings.Host, _settings.Port, SecureSocketOptions.None);
             if (_settings.RequireAuthentication)
-                await client.AuthenticateAsync(_settings.Username, _settings.Password);
+                client.Authenticate(_settings.Username, _settings.Password);
 
-            await client.SendAsync(message);
+            client.Send(message);
+            _logger.LogInformation("Message [{subject}] sent to {receipient}", message.Subject, message.To);
 
-            await client.DisconnectAsync(true);
+            client.Disconnect(true);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Email error");
+            success = false;
         }
+
+        return success;
     }
 }

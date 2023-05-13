@@ -14,8 +14,8 @@
     </ol>
 </nav>
 
-<div class="row">
-    <div class="col-md-6">
+<div class="row g-3">
+    <div class="col-lg-6">
         <div class="card h-100">
             <div class="card-header">Account</div>
             <div class="card-body">
@@ -57,7 +57,7 @@
             </div>
         </div>
     </div>
-    <div class="col-md-6">
+    <div class="col-lg-6">
         <div class="card h-100">
             <div class="card-header">Claims</div>
             <div class="card-body">
@@ -68,11 +68,11 @@
                             {
                                 <tr>
                                     <th>@claim.Type</th>
-                                    <td>@claim.Value</td>
+                                    <td><span class="d-inline-block text-truncate" style="max-width: 150px;">@claim.Value</span></td>
                                     <td>
                                         <a asp-action="RemoveClaim" asp-route-userId="@Model.Id"
                                        asp-route-claimType="@claim.Type" asp-route-claimValue="@claim.Value"
-                                       class="delete btn btn-outline-danger btn-sm">
+                                           class="delete btn btn-outline-danger btn-sm">
                                             <i class="bi bi-trash-fill"></i>
                                         </a>
                                     </td>
