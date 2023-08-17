@@ -31,7 +31,6 @@ services.AddDbContext<AppDbContext>(options =>
 
 services.AddQuartz(options =>
 {
-    options.UseMicrosoftDependencyInjectionJobFactory();
     options.UseSimpleTypeLoader();
     options.UseInMemoryStore();
 });
