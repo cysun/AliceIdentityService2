@@ -72,8 +72,7 @@ public class EmailSender
 
         try
         {
-            client.ServerCertificateValidationCallback = (s, c, h, e) => true;
-            client.Connect(_settings.Host, _settings.Port, SecureSocketOptions.None);
+            client.Connect(_settings.Host, _settings.Port, SecureSocketOptions.StartTls);
             if (_settings.RequireAuthentication)
                 client.Authenticate(_settings.Username, _settings.Password);
 
