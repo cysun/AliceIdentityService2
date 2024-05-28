@@ -19,9 +19,9 @@ public class MapperProfile : Profile
 
         CreateMap<ApplicationInputModel, OpenIddictApplicationDescriptor>()
             .ForMember(dest => dest.ClientSecret, opt => opt.Condition(src => src.IsNewClientSecret))
-            .ForMember(dest => dest.Type, opt => opt.MapFrom((src, dest) =>
+            .ForMember(dest => dest.ClientType, opt => opt.MapFrom((src, dest) =>
             {
-                if (!src.IsNewClientSecret) return dest.Type;
+                if (!src.IsNewClientSecret) return dest.ClientType;
                 return string.IsNullOrEmpty(src.ClientSecret) ?
                     OpenIddictConstants.ClientTypes.Public : OpenIddictConstants.ClientTypes.Confidential;
             }));
