@@ -87,8 +87,8 @@ namespace AliceIdentityService.Controllers
                 var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                 code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
                 var link = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code });
-                var success = _emailSender.SendEmailVerificationMessage(user, link);
-                _logger.LogInformation("Verification email to {email}: {success}", user.Email, success ? "successful" : "failed");
+                _emailSender.SendEmailVerificationMessage(user, link);
+                _logger.LogInformation("Verification email to {email}", user.Email);
 
                 return View("Status", new StatusViewModel
                 {
@@ -152,8 +152,8 @@ namespace AliceIdentityService.Controllers
                 var code = await _userManager.GeneratePasswordResetTokenAsync(user);
                 code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
                 var link = Url.Action("ResetPassword", "Account", new { code });
-                var success = _emailSender.SendResetPasswordMessage(email, link);
-                _logger.LogInformation("ResetPassword email to {email}: {success}", user.Email, success ? "successful" : "failed");
+                _emailSender.SendResetPasswordMessage(email, link);
+                _logger.LogInformation("ResetPassword email to {email}", user.Email);
             }
 
             // Don't reveal that the user does not exist or is not confirmed

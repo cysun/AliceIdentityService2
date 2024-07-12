@@ -5,15 +5,13 @@
   "ConnectionStrings": {
     "DefaultConnection": "Host=localhost;Database=ais2;Username=cysun;Password=abcd"
   },
+  "RabbitMQ": {
+    "QueueName": "alice-mail-service"
+  },
   "Email": {
     "AppUrl": "https://localhost:5001",
     "SenderName": "Alice Identity Service",
-    "SenderEmail": "ais@localhost.localdomain",
-    "Host": "localhost",
-    "Port": 25,
-    "RequireAuthentication": true,
-    "Username": "cysun@localhost.localdomain",
-    "Password": "abcd"
+    "SenderEmail": "ais@localhost.localdomain"
   },
   "Serilog": {
     "Using": [

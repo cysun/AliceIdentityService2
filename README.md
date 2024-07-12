@@ -21,6 +21,12 @@ sign-on (SSO) service for other applications and APIs.
   * Create a user with the `ais-admin` claim. This user is the administrator who can manage users, scopes, and clients.
 5. Run `AliceIdentityService`.
 
+## Email Configuration
+
+AIS uses [Alice Mail Service (AMS)](https://github.com/cysun/AliceMailService) to send emails. For the email functions
+(e.g. sending verification emails, password reset emails) to work, you need to set up AMS then configure the `RabbitMQ`
+section in `appsettings.json` accordingly.
+
 ## Current Limitations
 
 AIS only supports Authorization Code and Refresh Token grants and the `code` response type. Client Credentials will be

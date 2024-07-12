@@ -117,6 +117,9 @@ services.AddAuthorization(options =>
         policy.RequireClaim(AisConstants.AdminClaim));
 });
 
+services.Configure<RabbitMQSettings>(configuration.GetSection("RabbitMQ"));
+services.AddSingleton<RabbitService>();
+
 services.Configure<EmailSettings>(configuration.GetSection("Email"));
 services.AddScoped<EmailSender>();
 
