@@ -367,3 +367,4 @@ appsettings.json
 Migrations/
 deploy.sh
 .vscode/
+.idea/
