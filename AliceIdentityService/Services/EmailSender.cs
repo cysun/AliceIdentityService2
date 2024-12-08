@@ -30,7 +30,7 @@ public class EmailSender
         _logger = logger;
     }
 
-    public void SendEmailVerificationMessage(User user, string link)
+    public async Task SendEmailVerificationMessageAsync(User user, string link)
     {
         var msg = new MimeMessage();
         msg.From.Add(new MailboxAddress(_settings.SenderName, _settings.SenderEmail));
@@ -43,10 +43,10 @@ public class EmailSender
             Text = template.Render(new { link = $"{_settings.AppUrl}{link}" })
         };
 
-        Send(msg);
+        await SendAsync(msg);
     }
 
-    public void SendResetPasswordMessage(string email, string link)
+    public async Task SendResetPasswordMessageAsync(string email, string link)
     {
         var msg = new MimeMessage();
         msg.From.Add(new MailboxAddress(_settings.SenderName, _settings.SenderEmail));
@@ -59,8 +59,8 @@ public class EmailSender
             Text = template.Render(new { link = $"{_settings.AppUrl}{link}" })
         };
 
-        Send(msg);
+        await SendAsync(msg);
     }
 
-    public void Send(MimeMessage message) => _rabbitService.Send(message);
+    public async Task SendAsync(MimeMessage message) => await _rabbitService.SendAsync(message);
 }

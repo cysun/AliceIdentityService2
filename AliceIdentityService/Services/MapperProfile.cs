@@ -9,6 +9,9 @@ public class MapperProfile : Profile
 {
     public MapperProfile()
     {
+        // Trim all strings
+        CreateMap<string, string>().ConvertUsing(str => str == null ? null : str.Trim());
+
         CreateMap<RegistrationInputModel, User>();
         CreateMap<User, EditUserInputModel>();
         CreateMap<ScopeInputModel, OpenIddictScopeDescriptor>();

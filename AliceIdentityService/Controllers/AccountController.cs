@@ -87,7 +87,7 @@ namespace AliceIdentityService.Controllers
                 var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                 code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
                 var link = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code });
-                _emailSender.SendEmailVerificationMessage(user, link);
+                await _emailSender.SendEmailVerificationMessageAsync(user, link);
                 _logger.LogInformation("Verification email to {email}", user.Email);
 
                 return View("Status", new StatusViewModel
@@ -152,7 +152,7 @@ namespace AliceIdentityService.Controllers
                 var code = await _userManager.GeneratePasswordResetTokenAsync(user);
                 code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
                 var link = Url.Action("ResetPassword", "Account", new { code });
-                _emailSender.SendResetPasswordMessage(email, link);
+                await _emailSender.SendResetPasswordMessageAsync(email, link);
                 _logger.LogInformation("ResetPassword email to {email}", user.Email);
             }
 
