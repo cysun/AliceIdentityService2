@@ -52,14 +52,14 @@ services.AddOpenIddict()
 
         options.SetAuthorizationEndpointUris("connect/authorize")
                .SetTokenEndpointUris("connect/token")
-               .SetUserinfoEndpointUris("connect/userinfo")
-               .SetLogoutEndpointUris("connect/logout");
+               .SetUserInfoEndpointUris("connect/userinfo")
+               .SetEndSessionEndpointUris("connect/logout");
 
         // Don't EnableUserinfoEndpointPassthrough() because it requires access token.
         options.UseAspNetCore()
                .EnableAuthorizationEndpointPassthrough()
                .EnableTokenEndpointPassthrough()
-               .EnableLogoutEndpointPassthrough()
+               .EnableEndSessionEndpointPassthrough()
                .EnableStatusCodePagesIntegration();
 
         options.RegisterScopes(Scopes.Email, Scopes.Profile);
