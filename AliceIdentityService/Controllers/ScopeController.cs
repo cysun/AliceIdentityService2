@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
 using AliceIdentityService.Models;
-using AutoMapper;
+using AliceIdentityService.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OpenIddict.Abstractions;
@@ -15,11 +15,11 @@ namespace AliceIdentityService.Controllers
     {
         private readonly OpenIddictScopeManager<OpenIddictEntityFrameworkCoreScope> _scopeManager;
 
-        private readonly IMapper _mapper;
+        private readonly AppMapper _mapper;
         private readonly ILogger<ScopeController> _logger;
 
         public ScopeController(OpenIddictScopeManager<OpenIddictEntityFrameworkCoreScope> scopeManager,
-            IMapper mapper, ILogger<ScopeController> logger)
+            AppMapper mapper, ILogger<ScopeController> logger)
         {
             _scopeManager = scopeManager;
             _mapper = mapper;
@@ -57,7 +57,7 @@ namespace AliceIdentityService.Controllers
         {
             if (!ModelState.IsValid) return View(input);
 
-            var descriptor = _mapper.Map<OpenIddictScopeDescriptor>(input);
+            var descriptor = _mapper.Map(input);
             descriptor.Properties["claims"] = JsonSerializer.SerializeToElement(new string[] { });
             var scope = await _scopeManager.CreateAsync(descriptor);
             _logger.LogInformation("{user} created new scope {scope}", User.Identity.Name, scope.Name);
@@ -77,7 +77,7 @@ namespace AliceIdentityService.Controllers
             ViewBag.Descriptor = descriptor;
             ViewBag.Claims = descriptor.Properties["claims"].EnumerateArray().Select(e => e.GetString()).ToList();
 
-            return View(_mapper.Map<ScopeInputModel>(scope));
+            return View(_mapper.Map(scope));
         }
 
         [HttpPost]
@@ -145,8 +145,7 @@ namespace AliceIdentityService.Controllers
 
             return RedirectToAction("View", new { id = scopeId });
         }
-
-
+        
         public async Task<IActionResult> AddResourceAsync(string scopeId, string resource)
         {
             var scope = await _scopeManager.FindByIdAsync(scopeId);

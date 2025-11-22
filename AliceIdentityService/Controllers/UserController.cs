@@ -2,7 +2,6 @@ using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 using AliceIdentityService.Models;
 using AliceIdentityService.Services;
-using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -19,12 +18,12 @@ namespace AliceIdentityService.Controllers
         private readonly UserManager<User> _userManager;
         private readonly OpenIddictTokenManager<OpenIddictEntityFrameworkCoreToken> _tokenManager;
 
-        private readonly IMapper _mapper;
+        private readonly AppMapper _mapper;
         private readonly ILogger<UserController> _logger;
 
         public UserController(UserService userService, UserManager<User> userManager,
             OpenIddictTokenManager<OpenIddictEntityFrameworkCoreToken> tokenManager,
-            IMapper mapper, ILogger<UserController> logger)
+            AppMapper mapper, ILogger<UserController> logger)
         {
             _userService = userService;
             _userManager = userManager;
@@ -74,7 +73,7 @@ namespace AliceIdentityService.Controllers
         {
             if (!ModelState.IsValid) return View(input);
 
-            var user = _mapper.Map<User>(input);
+            var user = _mapper.Map(input);
             user.UserName = input.Email;
             user.ScreenName = $"{input.FirstName} {input.LastName}";
             user.EmailConfirmed = true;
@@ -100,7 +99,7 @@ namespace AliceIdentityService.Controllers
 
             ViewBag.Claims = await _userManager.GetClaimsAsync(user);
 
-            return View(_mapper.Map<EditUserInputModel>(user));
+            return View(_mapper.Map(user));
         }
 
         [HttpPost]

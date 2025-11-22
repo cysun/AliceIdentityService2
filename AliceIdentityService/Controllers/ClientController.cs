@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using AliceIdentityService.Helpers;
 using AliceIdentityService.Models;
-using AutoMapper;
+using AliceIdentityService.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OpenIddict.Abstractions;
@@ -16,12 +16,12 @@ namespace AliceIdentityService.Controllers
         private readonly OpenIddictScopeManager<OpenIddictEntityFrameworkCoreScope> _scopeManager;
         private readonly OpenIddictApplicationManager<OpenIddictEntityFrameworkCoreApplication> _applicationManager;
 
-        private readonly IMapper _mapper;
+        private readonly AppMapper _mapper;
         private readonly ILogger<ClientController> _logger;
 
         public ClientController(OpenIddictScopeManager<OpenIddictEntityFrameworkCoreScope> scopeManager,
             OpenIddictApplicationManager<OpenIddictEntityFrameworkCoreApplication> applicationManager,
-            IMapper mapper, ILogger<ClientController> logger)
+            AppMapper mapper, ILogger<ClientController> logger)
         {
             _scopeManager = scopeManager;
             _applicationManager = applicationManager;
@@ -104,7 +104,7 @@ namespace AliceIdentityService.Controllers
             ViewBag.Scopes = allowedScopes;
             ViewBag.AvailableScopes = availableScopes;
 
-            return View(_mapper.Map<ApplicationInputModel>(descriptor));
+            return View(_mapper.Map(descriptor));
         }
 
         [HttpPost]

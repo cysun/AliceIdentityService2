@@ -123,7 +123,7 @@ services.AddSingleton<RabbitService>();
 services.Configure<EmailSettings>(configuration.GetSection("Email"));
 services.AddScoped<EmailSender>();
 
-services.AddAutoMapper(config => config.AddProfile<MapperProfile>());
+services.AddSingleton<AppMapper>();
 
 services.AddCors();
 services.AddControllersWithViews();

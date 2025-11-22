@@ -363,6 +363,7 @@ MigrationBackup/
 FodyWeavers.xsd
 
 # My Settings
+.DS_Store
 appsettings.json
 Migrations/
 deploy.sh

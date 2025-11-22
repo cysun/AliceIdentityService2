@@ -2,7 +2,6 @@ using System.ComponentModel.DataAnnotations;
 using System.Text;
 using AliceIdentityService.Models;
 using AliceIdentityService.Services;
-using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -16,11 +15,11 @@ namespace AliceIdentityService.Controllers
         private readonly SignInManager<User> _signInManager;
         private readonly EmailSender _emailSender;
 
-        private readonly IMapper _mapper;
+        private readonly AppMapper _mapper;
         private readonly ILogger<AccountController> _logger;
 
         public AccountController(UserManager<User> userManager, SignInManager<User> signInManager,
-            EmailSender emailSender, IMapper mapper, ILogger<AccountController> logger)
+            EmailSender emailSender, AppMapper mapper, ILogger<AccountController> logger)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -76,7 +75,7 @@ namespace AliceIdentityService.Controllers
         {
             if (!ModelState.IsValid) return View(input);
 
-            var user = _mapper.Map<User>(input);
+            var user = _mapper.Map(input);
             user.UserName = input.Email;
             user.ScreenName = $"{input.FirstName} {input.LastName}";
             var result = await _userManager.CreateAsync(user, input.Password);
