@@ -1,9 +1,9 @@
 {
-  "version": "1.0",
+  "version": "3.0",
   "defaultProvider": "cdnjs",
   "libraries": [
     {
-      "library": "bootstrap@5.3.3",
+      "library": "bootstrap@5.3.8",
       "destination": "wwwroot/lib/bootstrap/",
       "files": [
         "js/bootstrap.bundle.min.js",
@@ -11,7 +11,7 @@
       ]
     },
     {
-      "library": "bootswatch@5.3.3",
+      "library": "bootswatch@5.3.8",
       "destination": "wwwroot/lib/bootswatch/",
       "files": [
         "cerulean/bootstrap.min.css",
@@ -26,7 +26,7 @@
       ]
     },
     {
-      "library": "bootstrap-icons@1.11.3",
+      "library": "bootstrap-icons@1.13.1",
       "destination": "wwwroot/lib/bootstrap-icons/",
       "files": [
         "font/fonts/bootstrap-icons.woff",

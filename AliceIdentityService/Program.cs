@@ -64,10 +64,10 @@ services.AddOpenIddict()
 
         options.RegisterScopes(Scopes.Email, Scopes.Profile);
 
-        options.AddEncryptionCertificate(new X509Certificate2(
-            Path.Combine(configuration["Application:CertificateFolder"], "encryption-certificate.pfx")));
-        options.AddSigningCertificate(new X509Certificate2(
-            Path.Combine(configuration["Application:CertificateFolder"], "signing-certificate.pfx")));
+        options.AddEncryptionCertificate(X509CertificateLoader.LoadPkcs12FromFile(
+            Path.Combine(configuration["Application:CertificateFolder"], "encryption-certificate.pfx"), null));
+        options.AddSigningCertificate(X509CertificateLoader.LoadPkcs12FromFile(
+            Path.Combine(configuration["Application:CertificateFolder"], "signing-certificate.pfx"), null));
 
         // Use unencrypted access token as it's not possible to share the encryption key
         // with all the APIs registered with AIS.
@@ -146,15 +146,16 @@ if (!environment.IsDevelopment())
     app.UseExceptionHandler("/Home/Error");
 
 app.UseSerilogRequestLogging();
-app.UseStaticFiles();
+app.MapStaticAssets();
 app.UseRouting();
 app.UseCors(option => option.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+        "default",
+        "{controller=Home}/{action=Index}/{id?}")
+    .WithStaticAssets();
 
 // Run App
 
