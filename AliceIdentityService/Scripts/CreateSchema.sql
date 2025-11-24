@@ -123,7 +123,7 @@ CREATE TABLE "OpenIddictAuthorizations" (
     "Scopes" text,
     "Status" character varying(50),
     "Subject" character varying(400),
-    "Type" character varying(50),
+    "Type" character varying(150),
     CONSTRAINT "PK_OpenIddictAuthorizations" PRIMARY KEY ("Id"),
     CONSTRAINT "FK_OpenIddictAuthorizations_OpenIddictApplications_Application~" FOREIGN KEY ("ApplicationId") REFERENCES "OpenIddictApplications" ("Id")
 );

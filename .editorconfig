@@ -13,3 +13,7 @@ csharp_namespace_body = file_scoped
 # Suppress Mapperly warnings
 dotnet_diagnostic.RMG012.severity = none
 dotnet_diagnostic.RMG020.severity = none
+
+# Suppress Rider warnings
+csharp_style_prefer_primary_constructors = false
+resharper_convert_to_primary_constructor_highlighting = none
